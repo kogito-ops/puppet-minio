@@ -47,7 +47,42 @@ class minio::config (
   $log_directory           = $minio::log_directory,
   ) {
 
-  $default_configuration = {}
+  $default_configuration = {
+    'version' => '18',
+    'credential' => {
+      'accessKey' => 'admin',
+      'secretKey' => 'password',
+    },
+    'region' => 'us-east-1',
+    'browser' => 'on',
+    'logger' => {
+      'console' => {
+        'enable' => true,
+      },
+      'file' => {
+        'enable' => true,
+        'filename' => "${log_directory}/minio.log",
+      },
+    },
+    'notify' => {
+      'amqp' => {},
+      'nats' => {},
+      'elasticsearch' => {},
+      'redis' => {},
+      'postgresql' => {},
+      'kafka' => {},
+      'webhook' => {},
+      'mysql' => {},
+    },
+  }
 
-  $resulting_configuration = deep_merge($default_configuration, $configuration)
+  $resulting_configuration = sorted_json(deep_merge($default_configuration, $configuration), true, 2)
+
+  file { "${configuration_directory}/config.json":
+    content => $resulting_configuration,
+    owner   => $owner,
+    group   => $group,
+    mode    => '0644',
+  }
+
 }

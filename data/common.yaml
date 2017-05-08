@@ -12,7 +12,13 @@ minio::configuration_directory: '/etc/minio'
 minio::installation_directory: '/opt/minio'
 minio::storage_root: '/var/minio'
 minio::log_directory: '/var/log/minio'
-minio::configuration: {}
+minio::configuration:
+  'version': '18'           # Depends on used Minio release
+  'credential':
+    'accessKey': 'ADMIN'
+    'secretKey': 'PASSWORD'
+  'region': 'us-east-1'
+  'browser': 'on'
 minio::manage_service: true
 minio::service_template: 'minio/systemd.erb'
 minio::service_path: '/lib/systemd/system/minio.service'

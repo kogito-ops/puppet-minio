@@ -10,7 +10,9 @@ AllCops:
     - vendor/**/*
     - .vendor/**/*
     - pkg/**/*
+    - lib/puppet/parser/functions/*
     - spec/fixtures/**/*
+    - spec/functions/*
 Lint/ConditionPosition:
   Enabled: True
 

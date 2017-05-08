@@ -29,9 +29,9 @@ describe 'minio class' do
       it { is_expected.to be_directory }
     end
 
-    # describe file('/etc/minio/config.json') do
-    #   it { is_expected.to be_file }
-    # end
+    describe file('/etc/minio/config.json') do
+      it { is_expected.to be_file }
+    end
 
     describe file('/var/log/minio') do
       it { is_expected.to be_directory }
@@ -49,8 +49,8 @@ describe 'minio class' do
       it { is_expected.to be_file }
     end
 
-    # describe port(9000) do
-    #   it { is_expected.to be_listening }
-    # end
+    describe port(9000) do
+      it { is_expected.to be_listening }
+    end
   end
 end
