@@ -1,4 +1,4 @@
-## (NOT YET RELEASED) Release 1.0.0
+## (2017-05-08) Release 1.0.0
 
 Initial release of Minio management module! Hurra!
 
