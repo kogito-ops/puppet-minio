@@ -1,0 +1,20 @@
+; top-most EditorConfig file
+root = true
+
+; Unix-style newlines
+[*]
+charset = utf-8
+end_of_line = lf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{erb,json,js,pp,rb,sql,tf,toml,twig,xlf,xml,yaml,yml}]
+indent_size = 2
+
+[Gemfile]
+indent_size = 2

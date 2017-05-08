@@ -1,0 +1,14 @@
+[Unit]
+Description=minio
+After=syslog.target network.target
+
+[Service]
+Type=simple
+WorkingDirectory=<%= @installation_directory %>
+User=<%= @owner %>
+ExecStart=<%= @installation_directory %>/minio --config-dir <%= @configuration_directory %>
+PIDFile=/var/spool/minio/pid/master.pid
+LimitNOFILE=49152
+
+[Install]
+WantedBy=multi-user.target
