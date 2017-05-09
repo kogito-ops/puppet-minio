@@ -27,6 +27,9 @@
 # * `home`
 # Qualified path to the users' home directory. Default: empty
 #
+# * `version`
+# Release version to be installed.
+#
 # * `checksum`
 # Checksum for the binary.
 #
@@ -90,6 +93,7 @@ class minio (
   $group,
   $home,
 
+  $version,
   $checksum,
   $checksum_type,
   $configuration_directory,

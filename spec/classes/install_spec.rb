@@ -11,6 +11,7 @@ describe 'minio::install', type: :class do
         let :params do
           {
             package_ensure: 'present',
+            version: 'RELEASE.2017-05-05T01-14-51Z',
             checksum: '9e3b6b4fe6638f46ef1fd1b1b6e79552bc50f992bf56706f0500aa44b8906adf',
             checksum_type: 'sha256',
             owner: 'minio',

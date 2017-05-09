@@ -15,6 +15,9 @@
 # * `group`
 # The group owning minio and its' files. Default: 'minio'
 #
+# * `version`
+# Release version to be installed.
+#
 # * `checksum`
 # Checksum for the binary.
 # Default: '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556'
@@ -64,6 +67,7 @@ class minio::install (
   $owner                   = $minio::owner,
   $group                   = $minio::group,
 
+  $version                 = $minio::version,
   $checksum                = $minio::checksum,
   $checksum_type           = $minio::checksum_type,
   $configuration_directory = $minio::configuration_directory,
@@ -121,7 +125,7 @@ class minio::install (
       }
     }
 
-    $source_url="https://dl.minio.io/server/minio/release/${kernel_down}-${arch}/minio"
+    $source_url="https://dl.minio.io/server/minio/release/${kernel_down}-${arch}/archive/minio.${version}"
 
     remote_file { 'minio':
       ensure        => $package_ensure,
