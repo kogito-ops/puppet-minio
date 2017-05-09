@@ -37,6 +37,12 @@
 # * `log_directory`
 # Log directory for minio. Default: '/var/log/minio'
 #
+# * `listen_ip`
+# IP address on which Minio should listen to requests.
+#
+# * `listen_port`
+# Port on which Minio should listen to requests.
+#
 # * `manage_service`
 # Should we manage a service definition for Minio?
 #
@@ -74,6 +80,8 @@ class minio::install (
   $installation_directory  = $minio::installation_directory,
   $storage_root            = $minio::storage_root,
   $log_directory           = $minio::log_directory,
+  $listen_ip               = $minio::listen_ip,
+  $listen_port             = $minio::listen_port,
 
   $manage_service          = $minio::manage_service,
   $service_template        = $minio::service_template,

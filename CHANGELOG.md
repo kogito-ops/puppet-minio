@@ -1,5 +1,9 @@
 ## (NOT YET RELEASED) Release 1.0.1
 
+### Updates
+
+*   added support to configure address and port
+
 ### Maintenance
 
 *   switch to using archive URLs for Minio downloads to provide a stable state.

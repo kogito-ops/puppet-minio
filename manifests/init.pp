@@ -48,6 +48,12 @@
 # * `log_directory`
 # Log directory for minio. Default: '/var/log/minio'
 #
+# * `listen_ip`
+# IP address on which Minio should listen to requests.
+#
+# * `listen_port`
+# Port on which Minio should listen to requests.
+#
 # * `configuration`
 # Hash style settings for configuring Minio.
 #
@@ -100,6 +106,8 @@ class minio (
   $installation_directory,
   $storage_root,
   $log_directory,
+  $listen_ip,
+  $listen_port,
 
   $configuration,
 

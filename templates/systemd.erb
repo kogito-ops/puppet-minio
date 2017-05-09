@@ -14,7 +14,7 @@ Group=<%= @group %>
 
 PermissionsStartOnly=true
 
-ExecStart=<%= @installation_directory %>/minio server --config-dir <%= @configuration_directory %> <%= @storage_root %>
+ExecStart=<%= @installation_directory %>/minio server --address <%= @listen_ip %>:<%= @listen_port %> --config-dir <%= @configuration_directory %> <%= @storage_root %>
 
 StandardOutput=journal
 StandardError=inherit

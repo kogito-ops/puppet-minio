@@ -20,6 +20,8 @@ minio::configuration:
     'secretKey': 'PASSWORD'
   'region': 'us-east-1'
   'browser': 'on'
+minio::listen_ip: 127.0.0.1
+minio::listen_port: 9000
 minio::manage_service: true
 minio::service_template: 'minio/systemd.erb'
 minio::service_path: '/lib/systemd/system/minio.service'

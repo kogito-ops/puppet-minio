@@ -20,6 +20,8 @@ describe 'minio::install', type: :class do
             installation_directory: '/opt/minio',
             storage_root: '/var/minio',
             log_directory: '/var/log/minio',
+            listen_ip: '127.0.0.1',
+            listen_port: '9000',
             manage_service: true,
             service_template: 'minio/systemd.erb',
             service_path: '/lib/systemd/system/minio.service',
