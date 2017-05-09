@@ -1,4 +1,4 @@
-## (NOT YET RELEASED) Release 1.0.1
+## (2017-05-09) Release 1.0.1
 
 ### Updates
 
