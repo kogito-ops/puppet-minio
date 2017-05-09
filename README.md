@@ -50,12 +50,20 @@ class { 'minio':
     version => 'RELEASE.2017-05-05T01-14-51Z',
     checksum => '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556',
     checksum_type => 'sha256',
+    configuration_directory => '/etc/minio',
     installation_directory => '/opt/minio',
     storage_root => '/var/minio',
     log_directory => '/var/log/minio',
     listen_ip => '127.0.0.1',
     listen_port => '9000',
-    configuration => {},
+    configuration => {
+        'credential' => {
+          'accessKey' => 'ADMIN',
+          'secretKey' => 'PASSWORD',
+        },
+        'region' => 'us-east-1',
+        'browser' => 'on',
+    },
     manage_service => true,
     service_template => 'minio/systemd.erb',
     service_path => '/lib/systemd/system/minio.service',
@@ -106,7 +114,6 @@ class { 'minio::install':
 class { 'minio::service':
     manage_service => true,
     service_provider => 'systemd',
-    installation_directory => '/opt/minio',
 }
 ```
 
@@ -114,7 +121,14 @@ class { 'minio::service':
 
 ```puppet
 class { 'minio::config':
-    configuration => {},
+    configuration => {
+        'credential' => {
+          'accessKey' => 'ADMIN',
+          'secretKey' => 'PASSWORD',
+        },
+        'region' => 'us-east-1',
+        'browser' => 'on',
+    },
     owner => 'minio',
     group => 'minio',
     installation_directory => '/opt/minio',
