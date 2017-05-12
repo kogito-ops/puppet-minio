@@ -90,32 +90,32 @@
 # Copyright 2017 Daniel S. Reichenbach <https://kogitoapp.com>
 #
 class minio (
-  $package_ensure,
+  Enum['present', 'absent'] $package_ensure,
 
-  $manage_user,
-  $manage_group,
-  $manage_home,
-  $owner,
-  $group,
-  $home,
+  Boolean $manage_user,
+  Boolean $manage_group,
+  Boolean $manage_home,
+  String $owner,
+  String $group,
+  Optional[String] $home,
 
-  $version,
-  $checksum,
-  $checksum_type,
-  $configuration_directory,
-  $installation_directory,
-  $storage_root,
-  $log_directory,
-  $listen_ip,
-  $listen_port,
+  String $version,
+  String $checksum,
+  String $checksum_type,
+  String $configuration_directory,
+  String $installation_directory,
+  String $storage_root,
+  String $log_directory,
+  String $listen_ip,
+  Integer $listen_port,
 
-  $configuration,
+  Hash $configuration,
 
-  $manage_service,
-  $service_template,
-  $service_path,
-  $service_provider,
-  $service_mode,
+  Boolean $manage_service,
+  String $service_template,
+  String $service_path,
+  String $service_provider,
+  String $service_mode,
   ) {
 
   class { '::minio::user': }

@@ -35,12 +35,12 @@
 # Copyright 2017 Daniel S. Reichenbach <https://kogitoapp.com>
 #
 class minio::user (
-  $manage_user  = $minio::manage_user,
-  $manage_group = $minio::manage_group,
-  $manage_home  = $minio::manage_home,
-  $owner        = $minio::owner,
-  $group        = $minio::group,
-  $home         = $minio::home,
+  Boolean $manage_user   = $minio::manage_user,
+  Boolean $manage_group  = $minio::manage_group,
+  Boolean $manage_home   = $minio::manage_home,
+  String $owner          = $minio::owner,
+  String $group          = $minio::group,
+  Optional[String] $home = $minio::home,
   ) {
 
   if ($manage_home) {

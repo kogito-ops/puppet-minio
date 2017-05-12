@@ -23,8 +23,8 @@
 # Copyright 2017 Daniel S. Reichenbach <https://kogitoapp.com>
 #
 class minio::service (
-  $manage_service         = $minio::manage_service,
-  $service_provider       = $minio::service_provider,
+  Boolean $manage_service  = $minio::manage_service,
+  String $service_provider = $minio::service_provider,
   ) {
 
   if ($manage_service) {

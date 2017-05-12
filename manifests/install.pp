@@ -69,25 +69,25 @@
 # Copyright 2017 Daniel S. Reichenbach <https://kogitoapp.com>
 #
 class minio::install (
-  $package_ensure          = $minio::package_ensure,
-  $owner                   = $minio::owner,
-  $group                   = $minio::group,
+  Enum['present', 'absent'] $package_ensure = $minio::package_ensure,
+  String $owner                   = $minio::owner,
+  String $group                   = $minio::group,
 
-  $version                 = $minio::version,
-  $checksum                = $minio::checksum,
-  $checksum_type           = $minio::checksum_type,
-  $configuration_directory = $minio::configuration_directory,
-  $installation_directory  = $minio::installation_directory,
-  $storage_root            = $minio::storage_root,
-  $log_directory           = $minio::log_directory,
-  $listen_ip               = $minio::listen_ip,
-  $listen_port             = $minio::listen_port,
+  String $version                 = $minio::version,
+  String $checksum                = $minio::checksum,
+  String $checksum_type           = $minio::checksum_type,
+  String $configuration_directory = $minio::configuration_directory,
+  String $installation_directory  = $minio::installation_directory,
+  String $storage_root            = $minio::storage_root,
+  String $log_directory           = $minio::log_directory,
+  String $listen_ip               = $minio::listen_ip,
+  Integer $listen_port            = $minio::listen_port,
 
-  $manage_service          = $minio::manage_service,
-  $service_template        = $minio::service_template,
-  $service_path            = $minio::service_path,
-  $service_provider        = $minio::service_provider,
-  $service_mode            = $minio::service_mode,
+  Boolean $manage_service         = $minio::manage_service,
+  String $service_template        = $minio::service_template,
+  String $service_path            = $minio::service_path,
+  String $service_provider        = $minio::service_provider,
+  String $service_mode            = $minio::service_mode,
   ) {
 
   file { $storage_root:

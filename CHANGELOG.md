@@ -1,3 +1,9 @@
+## (NOT YET RELEASED) Release 1.0.2
+
+### Maintenance
+
+*   use resource types for parameters
+
 ## (2017-05-09) Release 1.0.1
 
 ### Updates
