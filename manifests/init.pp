@@ -72,6 +72,10 @@
 # * `service_mode`
 # File mode for the created service definition.
 #
+# * `install_repo`
+# Base URL for downloading the binary.
+#
+#
 # Examples
 # --------
 #
@@ -104,6 +108,7 @@ class minio (
   String $checksum_type,
   String $configuration_directory,
   String $installation_directory,
+  String $install_repo = 'https://dl.minio.io/server/minio/release',
   String $storage_root,
   String $log_directory,
   String $listen_ip,
