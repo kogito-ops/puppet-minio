@@ -1,3 +1,9 @@
+## (NOT YET RELEASED) Release 1.0.3
+
+### Bug fixes
+
+*   set a fixed version for Rubocop gem
+
 ## (2017-07-13) Release 1.0.2
 
 ### Maintenance
