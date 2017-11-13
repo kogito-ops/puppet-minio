@@ -58,6 +58,9 @@
 # * `service_mode`
 # File mode for the created service definition.
 #
+# * `base_url`
+# Base URL for downloading the binary.
+#
 # Authors
 # -------
 #
@@ -88,6 +91,7 @@ class minio::install (
   String $service_path            = $minio::service_path,
   String $service_provider        = $minio::service_provider,
   String $service_mode            = $minio::service_mode,
+  String $base_url                = $minio::base_url,
   ) {
 
   file { $storage_root:
@@ -133,7 +137,7 @@ class minio::install (
       }
     }
 
-    $source_url="https://dl.minio.io/server/minio/release/${kernel_down}-${arch}/archive/minio.${version}"
+    $source_url="${base_url}/${kernel_down}-${arch}/archive/minio.${version}"
 
     remote_file { 'minio':
       ensure        => $package_ensure,
