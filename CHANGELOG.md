@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Release 1.1.0 (NOT YET RELEASED)
+## Release 1.1.0 (2017-11-15)
 
 With this release, ownership of this module is transfered to Kogito UG,
 a DevOps / Infrastructure services business in Berlin, Germany.
