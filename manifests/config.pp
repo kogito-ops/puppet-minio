@@ -77,7 +77,7 @@ class minio::config (
     },
   }
 
-  $resulting_configuration = sorted_json(deep_merge($default_configuration, $configuration), true, 2)
+  $resulting_configuration = to_sorted_json(deep_merge($default_configuration, $configuration))
 
   file { "${configuration_directory}/config.json":
     content => $resulting_configuration,

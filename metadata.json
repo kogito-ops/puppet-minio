@@ -1,16 +1,21 @@
 {
   "name": "kogitoapp-minio",
   "version": "1.0.2",
-  "author": "kogitoapp",
-  "summary": "Manage Minio with Puppet",
+  "author": "Kogito UG <brainz+puppet@kogitoapp.com>",
+  "summary": "A module to manage Minio to enjoy self-hosted S3 storage",
   "license": "Apache-2.0",
   "source": "https://github.com/kogitoapp/puppet-minio.git",
   "project_page": "https://github.com/kogitoapp/puppet-minio",
   "issues_url": "https://github.com/kogitoapp/puppet-minio/issues",
-  "tags": [
-    "minio",
-    "git",
-    "linux"
+  "dependencies": [
+    {
+      "name": "puppetlabs-stdlib",
+      "version_requirement": ">= 4.14.0 < 5.0.0"
+    },
+    {
+      "name": "lwf-remote_file",
+      "version_requirement": ">= 1.1.3 < 2.0.0"
+    }
   ],
   "operatingsystem_support": [
     {
@@ -20,7 +25,19 @@
       ]
     },
     {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
       "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
       "operatingsystemrelease": [
         "7"
       ]
@@ -39,20 +56,10 @@
       ]
     }
   ],
-  "dependencies": [
-    {
-      "name": "puppetlabs-stdlib",
-      "version_requirement": ">= 4.14.0 < 5.0.0"
-    },
-    {
-      "name": "lwf-remote_file",
-      "version_requirement": ">= 1.1.3 < 2.0.0"
-    }
-  ],
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 4.0.0 < 6.0.0"
+      "version_requirement": ">= 4.10.8 < 6.0.0"
     }
   ]
 }

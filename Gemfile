@@ -1,9 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'rubocop', '<= 0.48.1'
+gem 'rubocop', '>= 0.49.1'
 
 group :test do
-  gem 'coveralls',                                                      require: false if RUBY_VERSION >= '2.0.0'
   gem 'json_pure', '<= 2.0.1',                                          require: false if RUBY_VERSION < '2.0.0'
   gem 'metadata-json-lint',                                             require: false
   gem 'mocha', '>= 1.2.1',                                              require: false
@@ -15,13 +14,11 @@ group :test do
   gem 'puppet-lint-unquoted_string-check',                              require: false
   gem 'puppet-lint-variable_contains_upcase',                           require: false
   gem 'puppet-lint-version_comparison-check',                           require: false
-  gem 'puppet-strings', '~> 0.99.0',                                    require: false
   gem 'puppetlabs_spec_helper', '~> 1.2.2',                             require: false
   gem 'rspec-puppet', '~> 2.5',                                         require: false
   gem 'rspec-puppet-facts',                                             require: false
   gem 'rspec-puppet-utils',                                             require: false
   gem 'rubocop-rspec', '~> 1.6',                                        require: false if RUBY_VERSION >= '2.3.0'
-  gem 'simplecov-console',                                              require: false if RUBY_VERSION >= '2.0.0'
 end
 
 group :development do

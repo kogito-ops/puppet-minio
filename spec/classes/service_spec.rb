@@ -11,7 +11,7 @@ describe 'minio::service', type: :class do
         let :params do
           {
             manage_service: true,
-            service_provider: 'systemd'
+            service_provider: 'systemd',
           }
         end
 

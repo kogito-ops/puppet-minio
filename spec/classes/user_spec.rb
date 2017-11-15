@@ -15,7 +15,7 @@ describe 'minio::user', type: :class do
             manage_home: true,
             owner: 'minio',
             group: 'minio',
-            home: '/home/minio'
+            home: '/home/minio',
           }
         end
 

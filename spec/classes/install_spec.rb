@@ -27,7 +27,7 @@ describe 'minio::install', type: :class do
             service_template: 'minio/systemd.erb',
             service_path: '/lib/systemd/system/minio.service',
             service_provider: 'systemd',
-            service_mode: '0644'
+            service_mode: '0644',
           }
         end
 

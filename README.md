@@ -18,12 +18,12 @@ with default settings, or customize all settings to your liking.
 
 ### What Minio affects
 
-*   `puppet-minio` depends on
-    *   [puppetlabs-stdlib][puppetlabs-stdlib],
-    *   [lwf-remote_file][lwf-remote_file],
-*   it manages a user and group `minio`
-*   it manages the Minio directory (`/opt/minio`) and the storage (`/var/minio`)
-*   it install a `minio` service listening on port `3000`
+- `puppet-minio` depends on
+  - [puppetlabs-stdlib][puppetlabs-stdlib],
+  - [lwf-remote_file][lwf-remote_file],
+- it manages a user and group `minio`
+- it manages the Minio directory (`/opt/minio`) and the storage (`/var/minio`)
+- it install a `minio` service listening on port `3000`
 
 ### Beginning with Minio
 
@@ -139,7 +139,7 @@ class { 'minio::config':
 
 ## Limitations
 
-See [metadata.json](metadata.json) for supported platforms
+See [metadata.json](metadata.json) for supported platforms.
 
 ## Development
 
@@ -150,9 +150,9 @@ This project contains tests for [rspec-puppet][puppet-rspec].
 Quickstart:
 
 ```bash
-$ gem install bundler
-$ bundle install
-$ bundle exec rake test
+gem install bundler
+bundle install
+bundle exec rake test
 ```
 
 When submitting pull requests, please make sure that module documentation,
