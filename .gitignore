@@ -1,32 +1,22 @@
-# Add directories, files, and symbolic links which shall not be stored within
-# this git repository here.
+.*.sw[op]
+.metadata
+.yardoc
+.yardwarns
+*.iml
+/.bundle/
+/.idea/
+/.vagrant/
+/coverage/
+/bin/
+/doc/
+/Gemfile.local
+/Gemfile.lock
+/junit/
+/log/
+/log/
+/pkg/
+/spec/fixtures/manifests/
+/spec/fixtures/modules/
+/tmp/
+/vendor/
 
-# Numerous always-ignore extensions
-*.diff
-*.orig
-*.rej
-*.swp
-*~
-
-# Bundler files
-.bundle/*
-Gemfile.lock
-Gemfile.local
-
-# RSpec fixtures to be ignored
-spec/fixtures/manifests/
-spec/fixtures/modules/
-
-# Vendor'd dependencies
-vendor/*
-
-# Vagrant runtime data
-.vagrant/*
-
-## Misc. generated files
-coverage/*
-doc/*
-pkg/*
-.yardoc/*
-junit/*
-log/*
