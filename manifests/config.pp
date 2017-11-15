@@ -48,7 +48,7 @@ class minio::config (
   ) {
 
   $default_configuration = {
-    'version' => '18',
+    'version' => '19',
     'credential' => {
       'accessKey' => 'admin',
       'secretKey' => 'password',
@@ -66,6 +66,7 @@ class minio::config (
     },
     'notify' => {
       'amqp' => {},
+      'mqtt' => {},
       'nats' => {},
       'elasticsearch' => {},
       'redis' => {},

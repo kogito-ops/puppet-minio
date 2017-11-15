@@ -11,7 +11,7 @@ describe 'minio::config', type: :class do
         let :params do
           {
             configuration: {
-              'version' => '18',
+              'version' => '19',
               'credential' => {
                 'accessKey' => 'ADMIN',
                 'secretKey' => 'PASSWORD'

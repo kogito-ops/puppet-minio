@@ -1,42 +1,30 @@
-## (NOT YET RELEASED) Release 1.0.3
+# Changelog
 
-### Bug fixes
+All notable changes to this project will be documented in this file.
 
-*   set a fixed version for Rubocop gem
+## Release 1.1.0 (NOT YET RELEASED)
 
-### Maintenance
 
-*   Added Debian Stretch support
+**Features**
 
-## (2017-07-13) Release 1.0.2
+- Upgrade default Minio installation to a more recent version
 
-### Maintenance
+## Release 1.0.2 (2017-07-13)
 
-*   use resource types for parameters
+**Features**
 
-## (2017-05-09) Release 1.0.1
+- Switched to using proper resource types in all places
 
-### Updates
+## Release 1.0.1 (2017-05-09)
 
-*   added support to configure address and port
+**Features**
 
-### Maintenance
+- Added support to configure service address and port
 
-*   switch to using archive URLs for Minio downloads to provide a stable state.
+**Bugfixes**
 
-## (2017-05-08) Release 1.0.0
+- Updated install function to use release archives for a stable source
 
-Initial release of Minio management module! Hurra!
+## Release 1.0.0 (2017-05-08)
 
-### New features
-
-*   support package and configuration of Minio on Debian, Ubuntu, CentOS,
-    RHEL.
-
-### Bug fixes
-
-*   ... nothing yet!
-
-### Maintenance
-
-*   ... adding in Travis CI build settings and Puppet Forge deployment.
+Initial release of [Minio](https://minio.io) management module. Hello, World!

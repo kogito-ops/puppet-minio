@@ -6,15 +6,16 @@ minio::manage_home: true
 minio::owner: 'minio'
 minio::group: 'minio'
 minio::home: ~
-minio::version: 'RELEASE.2017-05-05T01-14-51Z'
-minio::checksum: '9e3b6b4fe6638f46ef1fd1b1b6e79552bc50f992bf56706f0500aa44b8906adf'
+minio::base_url: 'https://dl.minio.io/server/minio/release'
+minio::version: 'RELEASE.2017-09-29T19-16-56Z'
+minio::checksum: 'b7707b11c64e04be87b4cf723cca5e776b7ed3737c0d6b16b8a3d72c8b183135'
 minio::checksum_type: 'sha256'
 minio::configuration_directory: '/etc/minio'
 minio::installation_directory: '/opt/minio'
 minio::storage_root: '/var/minio'
 minio::log_directory: '/var/log/minio'
 minio::configuration:
-  'version': '18'           # Depends on used Minio release
+  'version': '19'           # Depends on used Minio release
   'credential':
     'accessKey': 'ADMIN'
     'secretKey': 'PASSWORD'
