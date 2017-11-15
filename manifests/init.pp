@@ -27,6 +27,9 @@
 # * `home`
 # Qualified path to the users' home directory. Default: empty
 #
+# * `base_url`
+# Download base URL. Default: Github. Can be used for local mirrors.
+#
 # * `version`
 # Release version to be installed.
 #
@@ -99,6 +102,7 @@ class minio (
   String $group,
   Optional[String] $home,
 
+  String $base_url,
   String $version,
   String $checksum,
   String $checksum_type,

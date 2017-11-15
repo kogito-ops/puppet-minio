@@ -15,6 +15,9 @@
 # * `group`
 # The group owning minio and its' files. Default: 'minio'
 #
+# * `base_url`
+# Download base URL. Default: Github. Can be used for local mirrors.
+#
 # * `version`
 # Release version to be installed.
 #
@@ -73,6 +76,7 @@ class minio::install (
   String $owner                   = $minio::owner,
   String $group                   = $minio::group,
 
+  String $base_url                = $minio::base_url,
   String $version                 = $minio::version,
   String $checksum                = $minio::checksum,
   String $checksum_type           = $minio::checksum_type,
@@ -133,7 +137,7 @@ class minio::install (
       }
     }
 
-    $source_url="https://dl.minio.io/server/minio/release/${kernel_down}-${arch}/archive/minio.${version}"
+    $source_url="${base_url}/${kernel_down}-${arch}/archive/minio.${version}"
 
     remote_file { 'minio':
       ensure        => $package_ensure,

@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 **Features**
 
 - Upgrade default Minio installation to a more recent version
+- Base URL for Minio downloads can now be pointed to a custom location
 
 ## Release 1.0.2 (2017-07-13)
 

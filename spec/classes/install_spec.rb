@@ -11,6 +11,7 @@ describe 'minio::install', type: :class do
         let :params do
           {
             package_ensure: 'present',
+            base_url: 'https://dl.minio.io/server/minio/release',
             version: 'RELEASE.2017-09-29T19-16-56Z',
             checksum: 'b7707b11c64e04be87b4cf723cca5e776b7ed3737c0d6b16b8a3d72c8b183135',
             checksum_type: 'sha256',
