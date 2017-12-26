@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 2.0.0 (NOT YET RELEASED)
+
+**Features**
+
+- [Puppet Development Kit](https://puppet.com/download-puppet-development-kit)
+  is now the base for this Puppet module. `pdk validate` and `pdk test unit`
+  replace previous `bundle exec ...` calls
+- File download functionality has migrated to the Vox Pupuli
+  [Puppet Archive](https://github.com/voxpupuli/puppet-archive) module
+
 ## Release 1.1.0 (2017-11-15)
 
 With this release, ownership of this module is transfered to Kogito UG,

@@ -5,163 +5,92 @@
 [![Puppet Forge - downloads][forge-shield-dl]][forge-minio]
 [![Puppet Forge - scores][forge-shield-sc]][forge-minio]
 
+Welcome to the Puppet module for [Minio][minio], self-hosted S3 storage is here!
+
+## Table of Contents
+
+1. [Description](#description)
+2. [Setup - The basics of getting started with minio](#setup)
+    * [What minio affects](#what-minio-affects)
+    * [Setup requirements](#setup-requirements)
+    * [Beginning with minio](#beginning-with-minio)
+3. [Usage - Configuration options and additional functionality](#usage)
+4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+5. [Limitations - OS compatibility, etc.](#limitations)
+6. [Development - Guide for contributing to the module](#development)
+
 ## Description
 
-A Puppet module for managing [Minio][minio] (Amazon S3 compatible storage)
-settings.
+With this module you can install any Minio release version using Puppet either
+standalone, or behind a proxy of your choice. Configuration is Hiera compatible
+and allows for easy upgrades of Minio.
 
-This module allows you to install and configure Minio using pre-built binaries
-and does not need external package repositories. You can chose to install Minio
-with default settings, or customize all settings to your liking.
+In addition to installing Minio, it also takes care for having an unprivileged
+user, and a service definition to keep Minio running. All of these features are
+_optional_ and enabled by default. You can ditch them if you have other modules
+handling these things.
 
 ## Setup
 
-### What Minio affects
+### What minio affects
 
-- `puppet-minio` depends on
-  - [puppetlabs-stdlib][puppetlabs-stdlib],
-  - [lwf-remote_file][lwf-remote_file],
-- it manages a user and group `minio`
-- it manages the Minio directory (`/opt/minio`) and the storage (`/var/minio`)
-- it install a `minio` service listening on port `3000`
+If it's obvious what your module touches, you can skip this section. For example,
+folks can probably figure out that your mysql_instance module affects their MySQL
+instances.
 
-### Beginning with Minio
+If there's more that they should know about, though, this is the place to mention:
 
-The simplest use case is to rely on defaults. This can be done by simply
-including the class:
+* Files, packages, services, or operations that the module will alter, impact,
+  or execute.
+* Dependencies that your module automatically installs.
+* Warnings or other important notices.
 
-```puppet
-include ::minio
-```
+### Setup Requirements
+
+`puppet-minio` does not ask for much, it will be happy if you use a supported
+Puppet agent/server.
+
+### Beginning with minio
+
+The very basic steps needed for a user to get the module up and running. This
+can include setup steps, if necessary, or it can be an example of the most basic
+use of the module.
+
+## Usage
+
+This section is where you describe how to customize, configure, and do the fancy
+stuff with your module here. It's especially helpful if you include usage examples
+and code samples for doing things with your module.
 
 ## Reference
 
-### Class: `minio`
+Users need a complete list of your module's classes, types, defined types
+providers, facts, and functions, along with the parameters for each. You can
+provide this list either via Puppet Strings code comments or as a complete list
+in the README Reference section.
 
-```puppet
-class { 'minio':
-    package_ensure => 'present',
-    manage_user => true,
-    manage_group => true,
-    manage_home => true,
-    owner => 'minio',
-    group => 'minio',
-    home => '/home/minio',
-    version => 'RELEASE.2017-05-05T01-14-51Z',
-    checksum => '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556',
-    checksum_type => 'sha256',
-    configuration_directory => '/etc/minio',
-    installation_directory => '/opt/minio',
-    storage_root => '/var/minio',
-    log_directory => '/var/log/minio',
-    listen_ip => '127.0.0.1',
-    listen_port => '9000',
-    configuration => {
-        'credential' => {
-          'accessKey' => 'ADMIN',
-          'secretKey' => 'PASSWORD',
-        },
-        'region' => 'us-east-1',
-        'browser' => 'on',
-    },
-    manage_service => true,
-    service_template => 'minio/systemd.erb',
-    service_path => '/lib/systemd/system/minio.service',
-    service_provider => 'systemd',
-    service_mode => '0644',
-}
-```
+* If you are using Puppet Strings code comments, this Reference section should
+  include Strings information so that your users know how to access your
+  documentation.
 
-### Class: `minio::user`
+* If you are not using Puppet Strings, include a list of all of your classes,
+  defined types, and so on, along with their parameters. Each element in this
+  listing should include:
 
-```puppet
-class { 'minio::user':
-    manage_user => true,
-    manage_group => true,
-    manage_home => true,
-    owner => 'minio',
-    group => 'minio',
-    home => '/home/minio',
-}
-```
-
-### Class: `minio::install`
-
-```puppet
-class { 'minio::install':
-    package_ensure => 'present',
-    owner => 'minio',
-    group => 'minio',
-    version => 'RELEASE.2017-05-05T01-14-51Z',
-    checksum => '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556',
-    checksum_type => 'sha256',
-    installation_directory => '/opt/minio',
-    storage_root => '/var/minio',
-    log_directory => '/var/log/minio',
-    listen_ip => '127.0.0.1',
-    listen_port => '9000',
-    manage_service => true,
-    service_template => 'minio/systemd.erb',
-    service_path => '/lib/systemd/system/minio.service',
-    service_provider => 'systemd',
-    service_mode => '0644',
-}
-```
-
-### Class: `minio::service`
-
-```puppet
-class { 'minio::service':
-    manage_service => true,
-    service_provider => 'systemd',
-}
-```
-
-### Class: `minio::config`
-
-```puppet
-class { 'minio::config':
-    configuration => {
-        'credential' => {
-          'accessKey' => 'ADMIN',
-          'secretKey' => 'PASSWORD',
-        },
-        'region' => 'us-east-1',
-        'browser' => 'on',
-    },
-    owner => 'minio',
-    group => 'minio',
-    installation_directory => '/opt/minio',
-    storage_root => '/var/minio',
-    log_directory => '/var/log/minio',
-}
-```
+  * The data type, if applicable.
+  * A description of what the element does.
+  * Valid values, if the data type doesn't make it obvious.
+  * Default value, if any.
 
 ## Limitations
 
-See [metadata.json](metadata.json) for supported platforms.
+This is where you list OS compatibility, version compatibility, etc. If there
+are Known Issues, you might want to include them under their own heading here.
 
 ## Development
 
-### Running tests
-
-This project contains tests for [rspec-puppet][puppet-rspec].
-
-Quickstart:
-
-```bash
-gem install bundler
-bundle install
-bundle exec rake test
-```
-
-When submitting pull requests, please make sure that module documentation,
-test cases and syntax checks pass.
-
-[minio]: https://minio.io
-[puppetlabs-stdlib]: https://github.com/puppetlabs/puppetlabs-stdlib
-[lwf-remote_file]: https://github.com/lwf/puppet-remote_file
-[puppet-rspec]: http://rspec-puppet.com/
+Since your module is awesome, other users will want to play with it. Let them
+know what the ground rules for contributing are.
 
 [build-status]: https://travis-ci.org/kogitoapp/puppet-minio
 [build-shield]: https://travis-ci.org/kogitoapp/puppet-minio.png?branch=master
@@ -169,3 +98,5 @@ test cases and syntax checks pass.
 [forge-shield]: https://img.shields.io/puppetforge/v/kogitoapp/minio.svg
 [forge-shield-dl]: https://img.shields.io/puppetforge/dt/kogitoapp/minio.svg
 [forge-shield-sc]: https://img.shields.io/puppetforge/f/kogitoapp/minio.svg
+
+[minio]: https://minio.io/
