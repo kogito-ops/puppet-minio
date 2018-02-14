@@ -1,0 +1,45 @@
+# Ubuntu upstart file at /etc/init/minio.conf
+
+# ulimit values for minio
+#
+limit fsize unlimited unlimited
+limit cpu unlimited unlimited
+limit as unlimited unlimited
+limit nofile 64000 64000
+limit rss unlimited unlimited
+limit nproc 32000 32000
+
+kill timeout 30 # wait 300s between SIGTERM and SIGKILL.
+
+pre-start script
+    mkdir -p <%= @storage_root %>
+    mkdir -p <%= @log_directory %>
+end script
+
+start on runlevel [2345]
+stop on runlevel [06]
+
+script
+  ENABLE_MINIO="yes"
+  DAEMON=<%= @installation_directory %>/minio
+  DAEMONUSER=${DAEMONUSER:-<%= @owner %>}
+
+  if [ -f /etc/default/minio ]; then . /etc/default/minio; fi
+
+  # Handle NUMA access to CPUs (SERVER-3574)
+  # This verifies the existence of numactl as well as testing that the command works
+  NUMACTL_ARGS="--interleave=all"
+  if which numactl >/dev/null 2>/dev/null && numactl $NUMACTL_ARGS ls / >/dev/null 2>/dev/null
+  then
+    NUMACTL="$(which numactl) -- $NUMACTL_ARGS"
+    DAEMON_OPTS="server "${DAEMON_OPTS:-}"--address <%= @listen_ip %>:<%= @listen_port %> --config-dir <%= @configuration_directory %> <%= @storage_root %>"
+  else
+    NUMACTL=""
+    DAEMON_OPTS="-- server "${DAEMON_OPTS:-}"--address <%= @listen_ip %>:<%= @listen_port %> --config-dir <%= @configuration_directory %> <%= @storage_root %>"
+  fi
+
+  if [ "x$ENABLE_MINIO" = "xyes" ]
+  then
+    exec start-stop-daemon --start --chuid $DAEMONUSER --exec $NUMACTL $DAEMON $DAEMON_OPTS
+  fi
+end script

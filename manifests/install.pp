@@ -183,6 +183,12 @@ class minio::install (
   }
 
   if ($manage_service) {
+
+    case $service_provider {
+      'upstart': { $service_path = '/etc/init/minio.conf'; $service_template = 'minio/upstart.erb' }
+      default:   {}
+    }
+
     file { "service:${service_path}":
       path    => $service_path,
       content => template($service_template),
