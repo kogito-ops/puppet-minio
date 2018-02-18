@@ -43,6 +43,8 @@ Style/FormatStringToken:
 Style/Lambda:
   Description: Prefer the keyword for easier discoverability.
   EnforcedStyle: literal
+Style/MixinUsage:
+  Enabled: False
 Style/RegexpLiteral:
   Description: Community preference. See https://github.com/voxpupuli/modulesync_config/issues/168
   EnforcedStyle: percent_r
@@ -62,7 +64,7 @@ Style/TrailingCommaInLiteral:
 Style/SymbolArray:
   Description: Using percent style obscures symbolic intent of array's contents.
   EnforcedStyle: brackets
-Style/EndOfLine:
+Layout/EndOfLine:
   Enabled: false
 Style/CollectionMethods:
   Enabled: true
