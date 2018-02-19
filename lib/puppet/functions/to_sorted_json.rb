@@ -34,7 +34,7 @@ Puppet::Functions.create_function(:to_sorted_json) do
       end
       '{' << ret.join(',') << '}'
     else
-      raise Exception('Unable to handle object of type %{s}' % obj.class.to_s)
+      raise Exception(format('Unable to handle object of type %{s}', obj.class.to_s))
     end
   end
 
