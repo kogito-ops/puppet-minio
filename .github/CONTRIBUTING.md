@@ -29,13 +29,13 @@ By default the tests use a baseline version of Puppet.
 If you have Ruby 2.x or want a specific version of Puppet, you must set an
 environment variable such as:
 
-```bash
+```console
 export PUPPET_VERSION="~> 4.2.0"
 ```
 
 Install the dependencies like so...
 
-```bash
+```console
 bundle install
 ```
 
@@ -44,7 +44,7 @@ bundle install
 The test suite will run [Puppet Lint][puppet-lint] and [Puppet Syntax][puppet-syntax]
 to check various syntax and style things. You can run these locally with:
 
-```bash
+```console
 bundle exec rake lint
 bundle exec rake validate
 ```
@@ -57,19 +57,19 @@ before then feel free to ask about how best to test your new feature.
 
 To run your all the unit tests
 
-```bash
+```console
 bundle exec rake spec SPEC_OPTS='--format documentation'
 ```
 
 To run a specific spec test set the `SPEC` variable:
 
-```bash
+```console
 bundle exec rake spec SPEC=spec/foo_spec.rb
 ```
 
 To run the linter, the syntax checker and the unit tests:
 
-```bash
+```console
 bundle exec rake test
 ```
 
@@ -82,14 +82,14 @@ This fires up a new virtual machine (using vagrant) and runs a series of
 simple tests against it after applying the module. You can run this
 with:
 
-```bash
+```console
 bundle exec rake beaker
 ```
 
 This will run the tests on a Debian 8 (Jessie) virtual machine. You can also
 run the integration tests against Centos 6.5 with.
 
-```bash
+```console
 BEAKER_set=centos-6 bundle exec rake beaker
 ```
 

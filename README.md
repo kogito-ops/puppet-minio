@@ -149,7 +149,7 @@ This project contains tests for [rspec-puppet][puppet-rspec].
 
 Quickstart:
 
-```bash
+```console
 gem install bundler
 bundle install
 bundle exec rake test
