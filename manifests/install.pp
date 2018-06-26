@@ -92,6 +92,7 @@ class minio::install (
   String $service_path            = $minio::service_path,
   String $service_provider        = $minio::service_provider,
   String $service_mode            = $minio::service_mode,
+  Enum['remote_file', 'archive'] $provider = $minio::install_provider,
   ) {
 
   file { $storage_root:
@@ -139,16 +140,44 @@ class minio::install (
 
     $source_url="${base_url}/${kernel_down}-${arch}/archive/minio.${version}"
 
-    remote_file { 'minio':
-      ensure        => $package_ensure,
-      path          => "${installation_directory}/minio",
-      source        => $source_url,
-      checksum      => $checksum,
-      checksum_type => $checksum_type,
-      notify        => [
-        Exec["permissions:${$installation_directory}/minio"],
-        Service['minio']
-      ],
+    $install_notify = [
+      Exec["permissions:${$installation_directory}/minio"],
+      Service['minio']
+    ]
+    case $provider {
+      'remote_file': {
+        remote_file { 'minio':
+          ensure        => $package_ensure,
+          path          => "${installation_directory}/minio",
+          source        => $source_url,
+          checksum      => $checksum,
+          checksum_type => $checksum_type,
+          notify        => $install_notify,
+        }
+      }
+      'archive': {
+        archive { $source_url:
+          ensure        => $package_ensure,
+          source        => $source_url,
+          checksum      => $checksum,
+          checksum_type => $checksum_type,
+          user          => $owner,
+          group         => $group,
+          notify        => $install_notify,
+          subscribe     => File['minio'],
+        }
+        file { 'minio':
+          ensure => 'file',
+          owner  => $owner,
+          group  => $group,
+          mode   => '0755',
+          path   => "${installation_directory}/minio",
+          notify => $install_notify,
+        }
+      }
+      default: {
+        fail("provider ${provider} is not supported")
+      }
     }
   }
 

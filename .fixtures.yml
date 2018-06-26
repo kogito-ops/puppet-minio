@@ -9,5 +9,8 @@ fixtures:
     remotefile:
       repo: 'https://github.com/lwf/puppet-remote_file.git'
       ref: 'v1.1.3'
+    archive:
+      repo: 'https://github.com/voxpupuli/puppet-archive.git'
+      ref: 'v3.1.0'
   symlinks:
     minio: "#{source_dir}"

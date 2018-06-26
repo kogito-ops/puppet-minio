@@ -120,6 +120,7 @@ class minio (
   String $service_path,
   String $service_provider,
   String $service_mode,
+  Enum['remote_file', 'archive'] $install_provider,
   ) {
 
   class { '::minio::user': }

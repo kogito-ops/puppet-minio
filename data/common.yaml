@@ -28,3 +28,4 @@ minio::service_template: 'minio/systemd.erb'
 minio::service_path: '/lib/systemd/system/minio.service'
 minio::service_provider: 'systemd'
 minio::service_mode: '0644'
+minio::install_provider: remote_file
