@@ -3,7 +3,7 @@ require 'beaker-puppet'
 
 include BeakerPuppet
 
-install_puppet_agent_on hosts, {} unless ENV['BEAKER_provision'] == 'no'
+install_puppet_agent_on hosts, :puppet_collection => 'puppet5' unless ENV['BEAKER_provision'] == 'no'
 
 RSpec.configure do |c|
   # Project root
