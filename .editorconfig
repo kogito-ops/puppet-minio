@@ -13,7 +13,10 @@ trim_trailing_whitespace = true
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{erb,pp,rb,yaml}]
+[*.{yaml,yml}]
+indent_size = 2
+
+[*.{erb,pp,rb}]
 indent_size = 2
 
 [Gemfile]
