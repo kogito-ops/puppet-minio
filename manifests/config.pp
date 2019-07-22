@@ -79,11 +79,12 @@ class minio::config (
 
   $resulting_configuration = to_sorted_json(deep_merge($default_configuration, $configuration))
 
-  file { "${configuration_directory}/config.json":
-    content => $resulting_configuration,
-    owner   => $owner,
-    group   => $group,
-    mode    => '0644',
+  unless $facts['check_configuration_file'] {
+      file { "${configuration_directory}/config.json":
+        content => $resulting_configuration,
+        owner   => $owner,
+        group   => $group,
+        mode    => '0644',
+      }
   }
-
 }
