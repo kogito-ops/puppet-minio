@@ -116,6 +116,7 @@ class minio (
   String $listen_ip,
   Integer $listen_port,
 
+  Boolean $replace_configuration,
   Hash $configuration,
 
   Boolean $manage_service,
