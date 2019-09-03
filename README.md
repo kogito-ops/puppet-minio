@@ -56,6 +56,7 @@ class { 'minio':
     log_directory => '/var/log/minio',
     listen_ip => '127.0.0.1',
     listen_port => '9000',
+    replace_configuration => false,
     configuration => {
         'credential' => {
           'accessKey' => 'ADMIN',
@@ -121,6 +122,7 @@ class { 'minio::service':
 
 ```puppet
 class { 'minio::config':
+    replace_configuration => false,
     configuration => {
         'credential' => {
           'accessKey' => 'ADMIN',

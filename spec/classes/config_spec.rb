@@ -10,6 +10,7 @@ describe 'minio::config', type: :class do
       context 'with all defaults' do
         let :params do
           {
+            replace_configuration: false,
             configuration: {
               'version' => '19',
               'credential' => {

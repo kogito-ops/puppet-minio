@@ -14,6 +14,7 @@ minio::configuration_directory: '/etc/minio'
 minio::installation_directory: '/opt/minio'
 minio::storage_root: '/var/minio'
 minio::log_directory: '/var/log/minio'
+minio::replace_configuration: false
 minio::configuration:
   'version': '19'           # Depends on used Minio release
   'credential':

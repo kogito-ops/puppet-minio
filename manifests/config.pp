@@ -38,6 +38,7 @@
 # Copyright 2017 Daniel S. Reichenbach <https://kogitoapp.com>
 #
 class minio::config (
+  $replace_configuration   = $minio::replace_configuration,
   $configuration           = $minio::configuration,
   $owner                   = $minio::owner,
   $group                   = $minio::group,
@@ -84,6 +85,7 @@ class minio::config (
     owner   => $owner,
     group   => $group,
     mode    => '0644',
+    replace => $replace_configuration,
   }
 
 }

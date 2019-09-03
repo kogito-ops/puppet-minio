@@ -57,6 +57,9 @@
 # * `listen_port`
 # Port on which Minio should listen to requests.
 #
+# * `replace_configuration`
+# Boolean indicating if the Minio configuration file should be updated even if it exists. Default: 'false'
+#
 # * `configuration`
 # Hash style settings for configuring Minio.
 #
