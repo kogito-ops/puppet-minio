@@ -1,56 +1,50 @@
+# frozen_string_literal: true
+
 require 'spec_helper_acceptance'
 
-describe 'minio class' do
-  context 'with default parameters' do
-    # Using puppet_apply as a helper
-    it 'works idempotently with no errors' do
-      pp = <<-PUPPET
-      class { 'minio': }
-      PUPPET
+describe 'with default parameters ', if: ['debian', 'redhat', 'ubuntu'].include?(os[:family]) do
+  pp = <<-PUPPETCODE
+  class { 'minio': }
+PUPPETCODE
 
-      # Run it twice and test for idempotency
-      apply_manifest(pp, catch_failures: true)
-      apply_manifest(pp, catch_changes: true)
-    end
+  it 'applies idempotently' do
+    idempotent_apply(pp)
+  end
 
-    describe group('minio') do
-      it { is_expected.to exist }
-    end
+  describe group('minio') do
+    it { is_expected.to exist }
+  end
 
-    describe user('minio') do
-      it { is_expected.to exist }
-    end
+  describe user('minio') do
+    it { is_expected.to exist }
+  end
 
-    describe file('/opt/minio') do
-      it { is_expected.to be_directory }
-    end
+  describe file('/opt/minio') do
+    it { is_expected.to be_directory }
+  end
 
-    describe file('/etc/minio') do
-      it { is_expected.to be_directory }
-    end
+  describe file('/etc/minio') do
+    it { is_expected.to be_directory }
+  end
 
-    describe file('/etc/minio/config.json') do
-      it { is_expected.to be_file }
-    end
+  describe file('/etc/minio/config') do
+    it { is_expected.to be_file }
+  end
 
-    describe file('/var/log/minio') do
-      it { is_expected.to be_directory }
-    end
+  describe file('/opt/minio/minio') do
+    it { is_expected.to be_file }
+  end
 
-    describe file('/opt/minio/minio') do
-      it { is_expected.to be_file }
-    end
+  describe file('/var/minio') do
+    it { is_expected.to be_directory }
+  end
 
-    describe file('/var/minio') do
-      it { is_expected.to be_directory }
-    end
+  describe service('minio') do
+    it { is_expected.to be_enabled }
+    it { is_expected.to be_running.under('systemd') }
+  end
 
-    describe file('/lib/systemd/system/minio.service') do
-      it { is_expected.to be_file }
-    end
-
-    describe port(9000) do
-      it { is_expected.to be_listening }
-    end
+  describe port(9000) do
+    it { is_expected.to be_listening }
   end
 end

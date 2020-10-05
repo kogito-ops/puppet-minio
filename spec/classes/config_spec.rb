@@ -1,24 +1,23 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
-describe 'minio::config', type: :class do
-  on_supported_os.each do |os, facts|
-    context "on #{os} " do
-      let :facts do
-        facts
+describe 'minio::config' do
+  on_supported_os.each do |os, os_facts|
+    context "on #{os}" do
+      let(:facts) { os_facts }
+
+      let(:pre_condition) do
+        "class { 'minio::service':
+            manage_service => true,
+            service_provider => 'systemd',
+        }"
       end
 
       context 'with all defaults' do
         let :params do
           {
-            configuration: {
-              'version' => '19',
-              'credential' => {
-                'accessKey' => 'ADMIN',
-                'secretKey' => 'PASSWORD',
-              },
-              'region' => 'us-east-1',
-              'browser' => 'on',
-            },
+            configuration: {},
             owner: 'minio',
             group: 'minio',
             configuration_directory: '/etc/minio',
@@ -27,7 +26,7 @@ describe 'minio::config', type: :class do
           }
         end
 
-        it { is_expected.to contain_file('/etc/minio/config.json') }
+        it { is_expected.to contain_file('/etc/minio/config') }
       end
     end
   end

@@ -5,7 +5,7 @@ minio::manage_group: true
 minio::manage_home: true
 minio::owner: 'minio'
 minio::group: 'minio'
-minio::home: ~
+minio::home: '/etc/minio'
 minio::base_url: 'https://dl.minio.io/server/minio/release'
 minio::version: 'RELEASE.2020-10-03T02-19-42Z'
 minio::checksum: 'd8164b0446c79fc80f5d3a06971fa87fa0ede519c6d253f260fbfba7aa834a0b'

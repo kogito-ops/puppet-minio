@@ -147,9 +147,12 @@ This project contains tests for [rspec-puppet][puppet-rspec].
 Quickstart:
 
 ```console
-gem install bundler
-bundle install
-bundle exec rake test
+pdk bundle install
+pdk bundle exec rake 'litmus:provision_list[puppet6]'
+pdk bundle exec rake 'litmus:install_agent[puppet6]'
+pdk bundle exec rake litmus:install_module
+pdk bundle exec rake litmus:acceptance:parallel
+pdk bundle exec rake litmus:tear_down
 ```
 
 When submitting pull requests, please make sure that module documentation,
