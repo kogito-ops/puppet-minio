@@ -24,7 +24,6 @@ describe 'minio::config', type: :class do
             configuration_directory: '/etc/minio',
             installation_directory: '/opt/minio',
             storage_root: '/var/minio',
-            log_directory: '/var/log/minio',
           }
         end
 

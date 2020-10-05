@@ -20,7 +20,6 @@ describe 'minio::install', type: :class do
             configuration_directory: '/etc/minio',
             installation_directory: '/opt/minio',
             storage_root: '/var/minio',
-            log_directory: '/var/log/minio',
             listen_ip: '127.0.0.1',
             listen_port: 9000,
             manage_service: true,
@@ -31,10 +30,9 @@ describe 'minio::install', type: :class do
           }
         end
 
-        it { is_expected.to contain_remote_file('minio') }
+        it { is_expected.to contain_archive('minio') }
         it { is_expected.to contain_file('/etc/minio') }
         it { is_expected.to contain_file('/opt/minio') }
-        it { is_expected.to contain_file('/var/log/minio') }
         it { is_expected.to contain_file('/var/minio') }
         it { is_expected.to contain_file('service:/lib/systemd/system/minio.service') }
         it { is_expected.to contain_exec('permissions:/etc/minio') }

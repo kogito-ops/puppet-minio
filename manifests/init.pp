@@ -48,9 +48,6 @@
 # * `storage_root`
 # Directory where minio will keep all data. Default: '/var/minio'
 #
-# * `log_directory`
-# Log directory for minio. Default: '/var/log/minio'
-#
 # * `listen_ip`
 # IP address on which Minio should listen to requests.
 #
@@ -66,14 +63,8 @@
 # * `service_template`
 # Path to service template file.
 #
-# * `service_path`
-# Where to create the service definition.
-#
 # * `service_provider`
 # Which service provider do we use?
-#
-# * `service_mode`
-# File mode for the created service definition.
 #
 # Examples
 # --------
@@ -109,7 +100,6 @@ class minio (
   String $configuration_directory,
   String $installation_directory,
   String $storage_root,
-  String $log_directory,
   String $listen_ip,
   Integer $listen_port,
 
@@ -117,9 +107,7 @@ class minio (
 
   Boolean $manage_service,
   String $service_template,
-  String $service_path,
   String $service_provider,
-  String $service_mode,
   ) {
 
   class { '::minio::user': }

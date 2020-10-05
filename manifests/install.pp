@@ -37,9 +37,6 @@
 # * `storage_root`
 # Directory where minio will keep all files. Default: '/var/minio'
 #
-# * `log_directory`
-# Log directory for minio. Default: '/var/log/minio'
-#
 # * `listen_ip`
 # IP address on which Minio should listen to requests.
 #
@@ -52,14 +49,8 @@
 # * `service_template`
 # Path to service template file.
 #
-# * `service_path`
-# Where to create the service definition.
-#
 # * `service_provider`
 # Which service provider do we use?
-#
-# * `service_mode`
-# File mode for the created service definition.
 #
 # Authors
 # -------
@@ -83,15 +74,12 @@ class minio::install (
   String $configuration_directory = $minio::configuration_directory,
   String $installation_directory  = $minio::installation_directory,
   String $storage_root            = $minio::storage_root,
-  String $log_directory           = $minio::log_directory,
   String $listen_ip               = $minio::listen_ip,
   Integer $listen_port            = $minio::listen_port,
 
   Boolean $manage_service         = $minio::manage_service,
   String $service_template        = $minio::service_template,
-  String $service_path            = $minio::service_path,
   String $service_provider        = $minio::service_provider,
-  String $service_mode            = $minio::service_mode,
   ) {
 
   file { $storage_root:
@@ -115,13 +103,6 @@ class minio::install (
     notify => Exec["permissions:${installation_directory}"],
   }
 
-  -> file { $log_directory:
-    ensure => 'directory',
-    owner  => $owner,
-    group  => $group,
-    notify => Exec["permissions:${log_directory}"],
-  }
-
   if ($package_ensure) {
     $kernel_down=downcase($::kernel)
 
@@ -139,16 +120,18 @@ class minio::install (
 
     $source_url="${base_url}/${kernel_down}-${arch}/archive/minio.${version}"
 
-    remote_file { 'minio':
-      ensure        => $package_ensure,
-      path          => "${installation_directory}/minio",
-      source        => $source_url,
-      checksum      => $checksum,
-      checksum_type => $checksum_type,
-      notify        => [
-        Exec["permissions:${$installation_directory}/minio"],
-        Service['minio']
-      ],
+    archive::download { "${installation_directory}/minio":
+      ensure        => present,
+      checksum      => true,
+      digest_string => $checksum,
+      digest_type   => $checksum_type,
+      url           => $source_url,
+    }
+    -> file {"${installation_directory}/minio":
+      group  => $group,
+      mode   => '0744',
+      owner  => $owner,
+      notify => Service['minio'],
     }
   }
 
@@ -164,29 +147,24 @@ class minio::install (
     refreshonly => true,
   }
 
-  exec { "permissions:${$installation_directory}/minio":
-    command     => "chmod +x ${$installation_directory}/minio",
-    path        => '/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
-    refreshonly => true,
-  }
-
   exec { "permissions:${storage_root}":
     command     => "chown -Rf ${owner}:${group} ${storage_root}",
     path        => '/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
     refreshonly => true,
   }
 
-  exec { "permissions:${log_directory}":
-    command     => "chown -Rf ${owner}:${group} ${log_directory}",
-    path        => '/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
-    refreshonly => true,
-  }
-
   if ($manage_service) {
-    file { "service:${service_path}":
-      path    => $service_path,
-      content => template($service_template),
-      mode    => $service_mode,
+    case $service_provider {
+      'systemd': {
+        ::systemd::unit_file { 'minio.service':
+          content => template($service_template),
+          before  => Service['minio'],
+          notify  => Service['minio']
+        }
+      }
+      default: {
+        fail("Service provider ${service_provider} not supported")
+      }
     }
   }
 }
