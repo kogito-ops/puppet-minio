@@ -34,7 +34,6 @@ class minio::service (
       hasstatus  => false,
       hasrestart => false,
       provider   => $service_provider,
-      subscribe  => Remote_File['minio'],
     }
   }
 }

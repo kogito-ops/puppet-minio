@@ -2,12 +2,11 @@
 # See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
 ---
 fixtures:
+  forge_modules:
+    archive: 'puppet/archive'
+    systemd: 'camptocamp/systemd'
+    stdlib: 'puppetlabs/stdlib'
   repositories:
-    stdlib:
-      repo: 'https://github.com/puppetlabs/puppetlabs-stdlib.git'
-      ref: '4.21.0'
-    remotefile:
-      repo: 'https://github.com/lwf/puppet-remote_file.git'
-      ref: 'v1.1.3'
-  symlinks:
-    minio: "#{source_dir}"
+    facts: 'https://github.com/puppetlabs/puppetlabs-facts.git'
+    puppet_agent: 'https://github.com/puppetlabs/puppetlabs-puppet_agent.git'
+    provision: 'https://github.com/puppetlabs/provision.git'

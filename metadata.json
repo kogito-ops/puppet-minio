@@ -1,65 +1,77 @@
 {
-    "name": "kogitoapp-minio",
-    "version": "1.1.0",
-    "author": "Kogito UG <brainz+puppet@kogitoapp.com>",
-    "summary": "A module to manage Minio to enjoy self-hosted S3 storage",
-    "license": "Apache-2.0",
-    "source": "https://github.com/kogitoapp/puppet-minio.git",
-    "project_page": "https://github.com/kogitoapp/puppet-minio",
-    "issues_url": "https://github.com/kogitoapp/puppet-minio/issues",
-    "dependencies": [
-        {
-            "name": "puppetlabs-stdlib",
-            "version_requirement": ">= 4.14.0 < 6.0.0"
-        },
-        {
-            "name": "lwf-remote_file",
-            "version_requirement": ">= 1.1.3 < 2.0.0"
-        }
-    ],
-    "operatingsystem_support": [
-        {
-            "operatingsystem": "CentOS",
-            "operatingsystemrelease": [
-                "7"
-            ]
-        },
-        {
-            "operatingsystem": "OracleLinux",
-            "operatingsystemrelease": [
-                "7"
-            ]
-        },
-        {
-            "operatingsystem": "RedHat",
-            "operatingsystemrelease": [
-                "7"
-            ]
-        },
-        {
-            "operatingsystem": "Scientific",
-            "operatingsystemrelease": [
-                "7"
-            ]
-        },
-        {
-            "operatingsystem": "Debian",
-            "operatingsystemrelease": [
-                "8",
-                "9"
-            ]
-        },
-        {
-            "operatingsystem": "Ubuntu",
-            "operatingsystemrelease": [
-                "16.04"
-            ]
-        }
-    ],
-    "requirements": [
-        {
-            "name": "puppet",
-            "version_requirement": ">= 4.10.0 < 7.0.0"
-        }
-    ]
+  "name": "kogitoapp-minio",
+  "version": "1.1.0",
+  "author": "Kogito UG <brainz+puppet@kogitoapp.com>",
+  "summary": "A module to manage Minio to enjoy self-hosted S3 storage",
+  "license": "Apache-2.0",
+  "source": "https://github.com/kogitoapp/puppet-minio.git",
+  "project_page": "https://github.com/kogitoapp/puppet-minio",
+  "issues_url": "https://github.com/kogitoapp/puppet-minio/issues",
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.13.1 < 7.0.0"
+    },
+    {
+      "name": "puppet/archive",
+      "version_requirement": ">= 2.0.0 < 5.0.0"
+    },
+    {
+      "name": "camptocamp/systemd",
+      "version_requirement": ">= 1.1.1 < 3.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "7",
+        "8"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "9",
+        "10"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "18.04",
+        "20.04"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "puppet",
+      "version_requirement": ">= 4.10.0 < 7.0.0"
+    }
+  ],
+  "pdk-version": "1.18.1",
+  "template-url": "pdk-default#1.18.1",
+  "template-ref": "tags/1.18.1-0-g3d2e75c"
 }

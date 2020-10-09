@@ -1,58 +1,62 @@
-sudo: false
-dist: trusty
+---
+os: linux
+dist: xenial
 language: ruby
 cache: bundler
 before_install:
   - bundle -v
-  - rm Gemfile.lock || true
-  - gem update --system
-  - gem update bundler
+  - rm -f Gemfile.lock
+  - "# Update system gems if requested. This is useful to temporarily workaround troubles in the test runner"
+  - "# See https://github.com/puppetlabs/pdk-templates/commit/705154d5c437796b821691b707156e1b056d244f for an example of how this was used"
+  - "# Ignore exit code of SIGPIPE'd yes to not fail with shell's pipefail set"
+  - '[ -z "$RUBYGEMS_VERSION" ] || (yes || true) | gem update --system $RUBYGEMS_VERSION'
   - gem --version
   - bundle -v
 script:
-  - bundle exec rake $CHECK
-matrix:
+  - 'bundle exec rake $CHECK'
+bundler_args: --without system_tests
+rvm:
+  - 2.5.8
+stages:
+  - static
+  - spec
+  - acceptance
+jobs:
   fast_finish: true
   include:
-  - rvm: 2.3.4
-    bundler_args: --without system_tests development
-    env: CHECK=test
-  - rvm: 2.4.1
-    bundler_args: --without system_tests development
-    env: CHECK=test
-  - rvm: 2.4.1
-    bundler_args: --without system_tests development
-    env: CHECK=build DEPLOY_TO_FORGE=yes
-  - rvm: 2.4.1
-    bundler_args: --without development
-    dist: trusty
-    env: PUPPET_INSTALL_TYPE=agent CHECK=beaker BEAKER_set=docker/centos-7
-    services: docker
-    sudo: required
-  - rvm: 2.4.1
-    bundler_args: --without development
-    dist: trusty
-    env: PUPPET_INSTALL_TYPE=agent CHECK=beaker BEAKER_set=docker/debian-8
-    services: docker
-    sudo: required
-  - rvm: 2.4.1
-    bundler_args: --without development
-    dist: trusty
-    env: PUPPET_INSTALL_TYPE=agent CHECK=beaker BEAKER_set=docker/ubuntu-16.04
-    services: docker
-    sudo: required
+    -
+      env: CHECK="check:symlinks check:git_ignore check:dot_underscore check:test_file rubocop syntax lint metadata_lint"
+      stage: static
+    -
+      env: PUPPET_GEM_VERSION="~> 5.0" CHECK=parallel_spec
+      rvm: 2.4.10
+      stage: spec
+    -
+      env: PUPPET_GEM_VERSION="~> 6.0" CHECK=parallel_spec
+      stage: spec
+    -
+      before_script:
+        - "bundle exec rake 'litmus:provision_list[puppet5]'"
+        - "bundle exec rake 'litmus:install_agent[puppet5]'"
+        - "bundle exec rake litmus:install_module"
+      bundler_args:
+      env: PLATFORMS=puppet5
+      script: ["travis_wait 45 bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
+    -
+      before_script:
+        - "bundle exec rake 'litmus:provision_list[puppet6]'"
+        - "bundle exec rake 'litmus:install_agent[puppet6]'"
+        - "bundle exec rake litmus:install_module"
+      bundler_args:
+      env: PLATFORMS=puppet6
+      script: ["travis_wait 45 bundle exec rake litmus:acceptance:parallel"]
+      services: docker
+      stage: acceptance
 branches:
   only:
-  - master
-  - "/^v\\d/"
+    - master
+    - /^v\d/
 notifications:
   email: false
-deploy:
-  provider: puppetforge
-  user: kogitoapp
-  on:
-    tags: true
-    all_branches: true
-    condition: "$DEPLOY_TO_FORGE = yes"
-  password:
-    secure: RWAHq5aX/xOzl35Jj3SRH3pYc92vZ6C6sJXEkAKIm7XpyDmnsp5KPoZHGFPeMiO3KLZI0dgCDgbWxlDqjd1iLLvaz8jFo4YJEA1d0jKC1DM2wnV4ppblRc0nxYyHs2VhaHmYwt6t+nxkY9NJmgh6ujYjZ8gszthORopOBtkf8C+CPKByoELIF9bjkRIu6+ge1NQlVQCbo1pTHCNXS0kzLTKzYbm130H6jVHjP0Ut/ANWucMapqUMIeDgmxAEMiEoID4QeM6gTFMq7IQvQ5rJLbeNuob29jY1o5tYCLJGqKGifpebNVIg/ywnSQZcpSJvyDZfPkCU42xmlDYYOPfsxTpPiFEqONyjNDcRWVQoJgaim3qdygwGzbTGZ2ONSr0c0wI+wbcp1L0ZkIElxL0acR9H9I5QE/v/qAEVNyIQiDQek5r5IEivYrEUBQ6yRa3w6IRcHM3SacqlabexnVbqTET4vCINSIUPwnIPpSqRxAvDXnLnaGe79VavLdL264Q8VpjB0ka20/b/vhVHcqQ5oFnZnYm92sN2waEcxqJ13LES17HdIgb0D7j+5/xqMze5HUas2vY5EFd9XJXQk1qg6cBf4qPnMWA4tjOT2gHbM3XW+1J8PYyQTOh4E6JvUvemaHY41N2WH8+L3/DKfEZgYRweaJQ+tFoXvpnp86SNBbc=

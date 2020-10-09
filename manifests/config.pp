@@ -24,9 +24,6 @@
 # * `storage_root`
 # Directory where minio will keep all data. Default: '/var/minio'
 #
-# * `log_directory`
-# Log directory for minio. Default: '/var/log/minio'
-#
 # Authors
 # -------
 #
@@ -44,46 +41,21 @@ class minio::config (
   $configuration_directory = $minio::configuration_directory,
   $installation_directory  = $minio::installation_directory,
   $storage_root            = $minio::storage_root,
-  $log_directory           = $minio::log_directory,
   ) {
 
   $default_configuration = {
-    'version' => '19',
-    'credential' => {
-      'accessKey' => 'admin',
-      'secretKey' => 'password',
-    },
-    'region' => 'us-east-1',
-    'browser' => 'on',
-    'logger' => {
-      'console' => {
-        'enable' => true,
-      },
-      'file' => {
-        'enable' => true,
-        'filename' => "${log_directory}/minio.log",
-      },
-    },
-    'notify' => {
-      'amqp' => {},
-      'mqtt' => {},
-      'nats' => {},
-      'elasticsearch' => {},
-      'redis' => {},
-      'postgresql' => {},
-      'kafka' => {},
-      'webhook' => {},
-      'mysql' => {},
-    },
+    'MINIO_ACCESS_KEY'  => 'admin',
+    'MINIO_SECRET_KEY'  => 'password',
+    'MINIO_REGION_NAME' => 'us-east-1',
   }
 
-  $resulting_configuration = to_sorted_json(deep_merge($default_configuration, $configuration))
+  $resulting_configuration = deep_merge($default_configuration, $configuration)
 
-  file { "${configuration_directory}/config.json":
-    content => $resulting_configuration,
+  file { "${configuration_directory}/config":
+    content => template('minio/config.erb'),
     owner   => $owner,
     group   => $group,
     mode    => '0644',
+    notify  => Service['minio']
   }
-
 }
