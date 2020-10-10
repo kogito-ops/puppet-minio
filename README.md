@@ -23,7 +23,7 @@ with default settings, or customize all settings to your liking.
   - [puppet-archive][puppet-archive],
 - it manages a user and group `minio`
 - it manages the Minio directory (`/opt/minio`) and the storage (`/var/minio`)
-- it install a `minio` service listening on port `3000`
+- it install a `minio` service listening on port `9000`
 
 ### Beginning with Minio
 
