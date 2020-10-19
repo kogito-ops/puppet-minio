@@ -136,7 +136,7 @@ class minio::install (
   }
 
   exec { "permissions:${configuration_directory}":
-    command     => "chown -Rf ${owner}:${group} ${installation_directory}",
+    command     => "chown -Rf ${owner}:${group} ${configuration_directory}",
     path        => '/bin:/usr/bin:/sbin:/usr/sbin:/usr/local/bin:/usr/local/sbin',
     refreshonly => true,
   }
