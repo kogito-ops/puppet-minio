@@ -40,34 +40,29 @@ include ::minio
 
 ```puppet
 class { 'minio':
-    package_ensure => 'present',
-    manage_user => true,
-    manage_group => true,
-    manage_home => true,
-    owner => 'minio',
-    group => 'minio',
-    home => '/home/minio',
-    version => 'RELEASE.2017-05-05T01-14-51Z',
-    checksum => '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556',
-    checksum_type => 'sha256',
+    package_ensure          => 'present',
+    manage_user             => true,
+    manage_group            => true,
+    manage_home             => true,
+    owner                   => 'minio',
+    group                   => 'minio',
+    home                    => '/home/minio',
+    version                 => 'RELEASE.2021-08-20T18-32-01Z',
+    checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+    checksum_type           => 'sha256',
     configuration_directory => '/etc/minio',
-    installation_directory => '/opt/minio',
-    storage_root => '/var/minio',
-    listen_ip => '127.0.0.1',
-    listen_port => '9000',
-    configuration => {
-        'credential' => {
-          'accessKey' => 'ADMIN',
-          'secretKey' => 'PASSWORD',
-        },
-        'region' => 'us-east-1',
-        'browser' => 'on',
+    installation_directory  => '/opt/minio',
+    storage_root            => '/var/minio',
+    listen_ip               => '127.0.0.1',
+    listen_port             => 9000,
+    configuration           => {
+        'MINIO_ACCESS_KEY'  => 'admin',
+        'MINIO_SECRET_KEY'  => 'password',
+        'MINIO_REGION_NAME' => 'us-east-1',
     },
-    manage_service => true,
-    service_template => 'minio/systemd.erb',
-    service_path => '/lib/systemd/system/minio.service',
-    service_provider => 'systemd',
-    service_mode => '0644',
+    manage_service          => true,
+    service_template        => 'minio/systemd.erb',
+    service_provider        => 'systemd',
 }
 ```
 
@@ -75,12 +70,12 @@ class { 'minio':
 
 ```puppet
 class { 'minio::user':
-    manage_user => true,
+    manage_user  => true,
     manage_group => true,
-    manage_home => true,
-    owner => 'minio',
-    group => 'minio',
-    home => '/home/minio',
+    manage_home  => true,
+    owner        => 'minio',
+    group        => 'minio',
+    home         => '/home/minio',
 }
 ```
 
@@ -88,21 +83,21 @@ class { 'minio::user':
 
 ```puppet
 class { 'minio::install':
-    package_ensure => 'present',
-    owner => 'minio',
-    group => 'minio',
-    version => 'RELEASE.2017-05-05T01-14-51Z',
-    checksum => '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556',
-    checksum_type => 'sha256',
-    installation_directory => '/opt/minio',
-    storage_root => '/var/minio',
-    listen_ip => '127.0.0.1',
-    listen_port => '9000',
-    manage_service => true,
-    service_template => 'minio/systemd.erb',
-    service_path => '/lib/systemd/system/minio.service',
-    service_provider => 'systemd',
-    service_mode => '0644',
+    package_ensure          => 'present',
+    owner                   => 'minio',
+    group                   => 'minio',
+    base_url                => 'https://dl.minio.io/server/minio/release',
+    version                 => 'RELEASE.2017-05-05T01-14-51Z',
+    checksum                => '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556',
+    checksum_type           => 'sha256',
+    configuration_directory => '/etc/minio',
+    installation_directory  => '/opt/minio',
+    storage_root            => '/var/minio',
+    listen_ip               => '127.0.0.1',
+    listen_port             => 9000,
+    manage_service          => true,
+    service_template        => 'minio/systemd.erb',
+    service_provider        => 'systemd',
 }
 ```
 
@@ -119,18 +114,15 @@ class { 'minio::service':
 
 ```puppet
 class { 'minio::config':
-    configuration => {
-        'credential' => {
-          'accessKey' => 'ADMIN',
-          'secretKey' => 'PASSWORD',
-        },
-        'region' => 'us-east-1',
-        'browser' => 'on',
+    configuration          => {
+        'MINIO_ACCESS_KEY'  => 'admin',
+        'MINIO_SECRET_KEY'  => 'password',
+        'MINIO_REGION_NAME' => 'us-east-1',
     },
-    owner => 'minio',
-    group => 'minio',
+    owner                  => 'minio',
+    group                  => 'minio',
     installation_directory => '/opt/minio',
-    storage_root => '/var/minio',
+    storage_root           => '/var/minio',
 }
 ```
 
