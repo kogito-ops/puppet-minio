@@ -1,85 +1,85 @@
-# Class: minio::install
-# ===========================
+# @summary
+#   Installs minio server and required service definitions.
 #
-# Installs minio, and sets up the directory structure required to run Minio.
+# @example
+#   class { 'minio::server::install':
+#       package_ensure          => 'present',
+#       owner                   => 'minio',
+#       group                   => 'minio',
+#       base_url                => 'https://dl.minio.io/server/minio/release',
+#       version                 => 'RELEASE.2021-08-20T18-32-01Z',
+#       checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+#       checksum_type           => 'sha256',
+#       configuration_directory => '/etc/minio',
+#       installation_directory  => '/opt/minio',
+#       storage_root            => '/var/minio',
+#       listen_ip               => '127.0.0.1',
+#       listen_port             => 9000,
+#       manage_service          => true,
+#       service_template        => 'minio/systemd.erb',
+#       service_provider        => 'systemd',
+#   }
+#   -> service {'minio':
+#     ensure => 'running'
+#   }
 #
-# Parameters
-# ----------
+# @param [Enum['present', 'absent']] package_ensure
+#   Decides if the `minio` binary will be installed.
+# @param [String] owner
+#   The user owning minio and its' files.
+# @param [String] group
+#   The group owning minio and its' files.
+# @param [Stdlib::HTTPUrl] base_url
+#   Download base URL for the server. Can be used for local mirrors.
+# @param [String] version
+#   Release version to be installed.
+# @param [String] checksum
+#   Checksum for the binary.
+# @param [String] checksum_type
+#   Type of checksum used to verify the binary being installed.
+# @param [Stdlib::Absolutepath] configuration_directory
+#   Directory holding Minio configuration file./minio`
+# @param [Stdlib::Absolutepath] installation_directory
+#   Target directory to hold the minio installation./minio`
+# @param [Stdlib::Absolutepath] storage_root
+#   Directory where minio will keep all data./minio`
+# @param [Stdlib::IP::Address] listen_ip
+#   IP address on which Minio should listen to requests.
+# @param [Stdlib::Port] listen_port
+#   Port on which Minio should listen to requests.
+# @param [Boolean] manage_service
+#   Should we manage a server service definition for Minio?
+# @param [String] service_template
+#   Path to the server service template file.
+# @param [String] service_provider
+#   Which service provider do we use?
 #
-# * `package_ensure`
-# Decides if the `minio` binary will be installed. Default: 'present'
-#
-# * `owner`
-# The user owning minio and its' files. Default: 'minio'
-#
-# * `group`
-# The group owning minio and its' files. Default: 'minio'
-#
-# * `base_url`
-# Download base URL. Default: Github. Can be used for local mirrors.
-#
-# * `version`
-# Release version to be installed.
-#
-# * `checksum`
-# Checksum for the binary.
-# Default: '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556'
-#
-# * `checksum_type`
-# Type of checksum used to verify the binary being installed. Default: 'sha256'
-#
-# * `configuration_directory`
-# Directory holding Minio configuration file. Default: '/etc/minio'
-#
-# * `installation_directory`
-# Target directory to hold the minio installation. Default: '/opt/minio'
-#
-# * `storage_root`
-# Directory where minio will keep all files. Default: '/var/minio'
-#
-# * `listen_ip`
-# IP address on which Minio should listen to requests.
-#
-# * `listen_port`
-# Port on which Minio should listen to requests.
-#
-# * `manage_service`
-# Should we manage a service definition for Minio?
-#
-# * `service_template`
-# Path to service template file.
-#
-# * `service_provider`
-# Which service provider do we use?
-#
-# Authors
-# -------
-#
-# Daniel S. Reichenbach <daniel@kogitoapp.com>
+# @author Daniel S. Reichenbach <daniel@kogitoapp.com>
+# @author Evgeny Soynov <esoynov@kogito.network>
 #
 # Copyright
 # ---------
 #
-# Copyright 2017 Daniel S. Reichenbach <https://kogitoapp.com>
+# Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 #
-class minio::install (
-  Enum['present', 'absent'] $package_ensure = $minio::package_ensure,
-  String $owner                   = $minio::owner,
-  String $group                   = $minio::group,
+class minio::server::install (
+  Enum['present', 'absent']  $package_ensure          = $minio::server::package_ensure,
+  String $owner                                       = $minio::server::owner,
+  String $group                                       = $minio::server::group,
 
-  String $base_url                = $minio::base_url,
-  String $version                 = $minio::version,
-  String $checksum                = $minio::checksum,
-  String $checksum_type           = $minio::checksum_type,
-  String $configuration_directory = $minio::configuration_directory,
-  String $installation_directory  = $minio::installation_directory,
-  String $storage_root            = $minio::storage_root,
-  String $listen_ip               = $minio::listen_ip,
-  Integer $listen_port            = $minio::listen_port,
+  Stdlib::HTTPUrl $base_url                           = $minio::server::base_url,
+  String $version                                     = $minio::server::version,
+  String $checksum                                    = $minio::server::checksum,
+  String $checksum_type                               = $minio::server::checksum_type,
+  Stdlib::Absolutepath $configuration_directory       = $minio::server::configuration_directory,
+  Stdlib::Absolutepath $installation_directory        = $minio::server::installation_directory,
+  Stdlib::Absolutepath $storage_root                  = $minio::server::storage_root,
+  Stdlib::IP::Address $listen_ip                      = $minio::server::listen_ip,
+  Stdlib::Port $listen_port                           = $minio::server::listen_port,
 
-  Boolean $manage_service         = $minio::manage_service,
-  String $service_template        = $minio::service_template,
-  String $service_provider        = $minio::service_provider,
+  Boolean $manage_service                             = $minio::server::manage_service,
+  String $service_template                            = $minio::server::service_template,
+  String $service_provider                            = $minio::server::service_provider,
   ) {
 
   file { $storage_root:

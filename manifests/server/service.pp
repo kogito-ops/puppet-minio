@@ -1,35 +1,37 @@
-# Class: minio::service
-# ===========================
+# @summary
+#   Manages services for the `::minio::server` class.
 #
-# Manages services for the `::minio` class.
+# @example
+#   class { 'minio::server::service':
+#       manage_service          => true,
+#       service_provider        => 'systemd',
+#       service_ensure          => 'running',
+#   }
 #
-# Parameters
-# ----------
+# @param [Boolean] manage_service
+#   Should we manage a server service definition for Minio?
+# @param [Stdlib::Ensure::Service] service_ensure
+#   Defines the state of the minio server service.
+# @param [String] service_provider
+#   Which service provider do we use?
 #
-# * `manage_service`
-# Should we manage a service definition for Minio?
-#
-# * `service_provider`
-# Which service provider do we use?
-#
-# Authors
-# -------
-#
-# Daniel S. Reichenbach <daniel@kogitoapp.com>
+# @author Daniel S. Reichenbach <daniel@kogitoapp.com>
+# @author Evgeny Soynov <esoynov@kogito.network>
 #
 # Copyright
 # ---------
 #
-# Copyright 2017 Daniel S. Reichenbach <https://kogitoapp.com>
+# Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 #
-class minio::service (
-  Boolean $manage_service  = $minio::manage_service,
-  String $service_provider = $minio::service_provider,
+class minio::server::service (
+  Boolean                 $manage_service   = $minio::server::manage_service,
+  Stdlib::Ensure::Service $service_ensure   = $minio::server::service_ensure,
+  String                  $service_provider = $minio::server::service_provider,
   ) {
 
   if ($manage_service) {
     service { 'minio':
-      ensure     => 'running',
+      ensure     => $service_ensure,
       enable     => true,
       hasstatus  => false,
       hasrestart => false,
