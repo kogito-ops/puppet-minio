@@ -128,10 +128,10 @@ class minio::server::install (
       url           => $source_url,
     }
     -> file {"${installation_directory}/minio":
-      group  => $group,
-      mode   => '0744',
-      owner  => $owner,
-      notify => Service['minio'],
+      group => $group,
+      mode  => '0744',
+      owner => $owner,
+      # notify => Service['minio'],
     }
   }
 
@@ -158,8 +158,8 @@ class minio::server::install (
       'systemd': {
         ::systemd::unit_file { 'minio.service':
           content => template($service_template),
-          before  => Service['minio'],
-          notify  => Service['minio']
+          # before  => Service['minio'],
+          # notify  => Service['minio']
         }
       }
       default: {

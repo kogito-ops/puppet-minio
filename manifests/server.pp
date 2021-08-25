@@ -99,5 +99,7 @@ class minio::server (
 
   Class['minio::server::install']
   -> Class['minio::server::config']
-  ~> Class['minio::server::service']
+  -> Class['minio::server::service']
+
+  Class['minio::server::install', 'minio::server::config'] ~> Class['minio::server::service']
 }

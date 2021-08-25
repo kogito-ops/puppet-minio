@@ -108,7 +108,6 @@ class minio (
   String $service_provider,
   ) {
 
-  #TODO figure out if we should contain
   include ::minio::user
   include ::minio::server
 

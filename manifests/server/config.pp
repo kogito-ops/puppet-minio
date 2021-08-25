@@ -62,6 +62,6 @@ class minio::server::config (
     group   => $group,
     mode    => '0644',
     #TODO do we need this notify?
-    notify  => Service['minio']
+    # notify  => Service['minio']
   }
 }

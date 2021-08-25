@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'minio::install', type: :class do
+describe 'minio::server::install', type: :class do
   on_supported_os.each do |os, facts|
     context "on #{os} " do
       let :facts do
@@ -10,7 +10,7 @@ describe 'minio::install', type: :class do
       end
 
       let(:pre_condition) do
-        "class { 'minio::config':
+        "class { 'minio::server::config':
           configuration => {},
           owner => 'minio',
           group => 'minio',
@@ -18,9 +18,10 @@ describe 'minio::install', type: :class do
           installation_directory => '/opt/minio',
           storage_root => '/var/minio',
         }
-        class { 'minio::service':
+        class { 'minio::server::service':
           manage_service => true,
           service_provider => 'systemd',
+          service_ensure => 'running',
         }"
       end
 
