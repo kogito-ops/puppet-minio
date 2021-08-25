@@ -13,8 +13,12 @@ describe 'minio::server', type: :class do
         let :params do
           {
             package_ensure: 'present',
+            manage_user: true,
+            manage_group: true,
+            manage_home: true,
             owner: 'minio',
             group: 'minio',
+            home: '/home/minio',
             base_url: 'https://dl.minio.io/server/minio/release',
             version: 'RELEASE.2021-08-20T18-32-01Z',
             checksum: '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
@@ -34,7 +38,8 @@ describe 'minio::server', type: :class do
 
         it {
           is_expected.to compile.with_all_deps
-          is_expected.to contain_class('minio::server::install')
+          is_expected.to contain_class('minio::server::user')
+          is_expected.to contain_class('minio::server::install').that_requires('Class[minio::server::user]')
           is_expected.to contain_class('minio::server::config').that_requires('Class[minio::server::install]')
           is_expected.to contain_class('minio::server::service').that_requires('Class[minio::server::config]')
           is_expected.to contain_class('minio::server::service').that_subscribes_to(['Class[minio::server::install]', 'Class[minio::server::config]'])

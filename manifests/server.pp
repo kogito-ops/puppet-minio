@@ -27,25 +27,35 @@
 #   }
 #
 # @param [Enum['present', 'absent']] package_ensure
-#   Decides if the `minio` binary will be installed.
+#   Decides if the `minio` binary will be installed. Default: `present`
+# @param [Boolean] manage_user
+#   Should we manage provisioning the user? Default: `true`
+# @param [Boolean] manage_group
+#   Should we manage provisioning the group? Default: `true`
+# @param [Boolean] manage_home
+#   Should we manage provisioning the home directory? Default: `true`
 # @param [String] owner
-#   The user owning minio and its' files.
+#   The user owning minio and its' files. Default: 'minio'
 # @param [String] group
-#   The group owning minio and its' files.
+#   The group owning minio and its' files. Default: 'minio'
 # @param [Stdlib::HTTPUrl] base_url
 #   Download base URL for the server. Can be used for local mirrors.
+# @param [Optional[Stdlib::Absolutepath]] home
+#   Qualified path to the users' home directory. Default: empty
+# @param [Stdlib::HTTPUrl] base_url
+#   Download base URL for the server. Default: Github. Can be used for local mirrors.
 # @param [String] version
 #   Release version to be installed.
 # @param [String] checksum
 #   Checksum for the binary.
 # @param [String] checksum_type
-#   Type of checksum used to verify the binary being installed.
+#   Type of checksum used to verify the binary being installed. Default: `sha256`
 # @param [Stdlib::Absolutepath] configuration_directory
-#   Directory holding Minio configuration file./minio`
+#   Directory holding Minio configuration file. Default: `/etc/minio`
 # @param [Stdlib::Absolutepath] installation_directory
-#   Target directory to hold the minio installation./minio`
+#   Target directory to hold the minio installation. Default: `/opt/minio`
 # @param [Stdlib::Absolutepath] storage_root
-#   Directory where minio will keep all data./minio`
+#   Directory where minio will keep all data. Default: `/var/minio`
 # @param [Stdlib::IP::Address] listen_ip
 #   IP address on which Minio should listen to requests.
 # @param [Stdlib::Port] listen_port
@@ -53,9 +63,9 @@
 # @param [Hash[String[1], Variant[String, Integer]]] configuration
 #   Hash with environment settings for Minio.
 # @param [Boolean] manage_service
-#   Should we manage a server service definition for Minio?
+#   Should we manage a server service definition for Minio? Default: `true`
 # @param [Stdlib::Ensure::Service] service_ensure
-#   Defines the state of the minio server service.
+#   Defines the state of the minio server service. Default: `running`
 # @param [String] service_template
 #   Path to the server service template file.
 # @param [String] service_provider
@@ -72,6 +82,10 @@
 class minio::server (
   Enum['present', 'absent'] $package_ensure = $minio::package_ensure,
 
+  Boolean $manage_user = $minio::manage_user,
+  Boolean $manage_group = $minio::manage_group,
+  Boolean $manage_home = $minio::manage_home,
+  Optional[Stdlib::Absolutepath] $home = $minio::home,
   String $owner = $minio::owner,
   String $group = $minio::group,
 
@@ -93,11 +107,13 @@ class minio::server (
   String $service_provider = $minio::service_provider,
   ) {
 
+  include ::minio::server::user
   include ::minio::server::install
   include ::minio::server::config
   include ::minio::server::service
 
-  Class['minio::server::install']
+  Class['minio::server::user']
+  -> Class['minio::server::install']
   -> Class['minio::server::config']
   -> Class['minio::server::service']
 

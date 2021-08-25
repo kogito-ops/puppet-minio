@@ -10,6 +10,7 @@
 #       owner                   => 'minio',
 #       group                   => 'minio',
 #       home                    => '/home/minio',
+#       base_url                => 'https://dl.minio.io/server/minio/release',
 #       version                 => 'RELEASE.2021-08-20T18-32-01Z',
 #       checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
 #       checksum_type           => 'sha256',
@@ -108,9 +109,5 @@ class minio (
   String $service_provider,
   ) {
 
-  include ::minio::user
   include ::minio::server
-
-  Class['minio::user']
-  -> Class['minio::server']
 }

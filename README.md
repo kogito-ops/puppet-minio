@@ -68,10 +68,10 @@ class { 'minio':
 }
 ```
 
-### Class: `minio::user`
+### Class: `minio::server::user`
 
 ```puppet
-class { 'minio::user':
+class { 'minio::server::user':
     manage_user  => true,
     manage_group => true,
     manage_home  => true,
@@ -81,10 +81,10 @@ class { 'minio::user':
 }
 ```
 
-### Class: `minio::install`
+### Class: `minio::server::install`
 
 ```puppet
-class { 'minio::install':
+class { 'minio::server::install':
     package_ensure          => 'present',
     owner                   => 'minio',
     group                   => 'minio',
@@ -103,19 +103,20 @@ class { 'minio::install':
 }
 ```
 
-### Class: `minio::service`
+### Class: `minio::server::service`
 
 ```puppet
-class { 'minio::service':
+class { 'minio::server::service':
     manage_service => true,
     service_provider => 'systemd',
+    service_ensure => 'running',
 }
 ```
 
-### Class: `minio::config`
+### Class: `minio::server::config`
 
 ```puppet
-class { 'minio::config':
+class { 'minio::server::config':
     configuration          => {
         'MINIO_ACCESS_KEY'  => 'admin',
         'MINIO_SECRET_KEY'  => 'password',

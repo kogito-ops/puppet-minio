@@ -11,7 +11,7 @@
 * [`minio::server::config`](#minioserverconfig): Applies configuration for `::minio::server` class to system.
 * [`minio::server::install`](#minioserverinstall): Installs minio server and required service definitions.
 * [`minio::server::service`](#minioserverservice): Manages services for the `::minio::server` class.
-* [`minio::user`](#miniouser): Manages user for the minio installations.
+* [`minio::server::user`](#minioserveruser): Manages user for the minio server installations.
 
 ## Classes
 
@@ -35,6 +35,7 @@ class { 'minio':
     owner                   => 'minio',
     group                   => 'minio',
     home                    => '/home/minio',
+    base_url                => 'https://dl.minio.io/server/minio/release',
     version                 => 'RELEASE.2021-08-20T18-32-01Z',
     checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
     checksum_type           => 'sha256',
@@ -207,6 +208,18 @@ Data type: `String`
 
 Which service provider do we use?
 
+### <a name="minioclient"></a>`minio::client`
+
+A description of what this class does
+
+#### Examples
+
+##### 
+
+```puppet
+include minio::client
+```
+
 ### <a name="minioserver"></a>`minio::server`
 
 Copyright
@@ -249,8 +262,13 @@ class { 'minio::server':
 The following parameters are available in the `minio::server` class:
 
 * [`package_ensure`](#package_ensure)
+* [`manage_user`](#manage_user)
+* [`manage_group`](#manage_group)
+* [`manage_home`](#manage_home)
 * [`owner`](#owner)
 * [`group`](#group)
+* [`base_url`](#base_url)
+* [`home`](#home)
 * [`base_url`](#base_url)
 * [`version`](#version)
 * [`checksum`](#checksum)
@@ -270,15 +288,39 @@ The following parameters are available in the `minio::server` class:
 
 Data type: `Enum['present', 'absent']`
 
-Decides if the `minio` binary will be installed.
+Decides if the `minio` binary will be installed. Default: `present`
 
 Default value: `$minio::package_ensure`
+
+##### <a name="manage_user"></a>`manage_user`
+
+Data type: `Boolean`
+
+Should we manage provisioning the user? Default: `true`
+
+Default value: `$minio::manage_user`
+
+##### <a name="manage_group"></a>`manage_group`
+
+Data type: `Boolean`
+
+Should we manage provisioning the group? Default: `true`
+
+Default value: `$minio::manage_group`
+
+##### <a name="manage_home"></a>`manage_home`
+
+Data type: `Boolean`
+
+Should we manage provisioning the home directory? Default: `true`
+
+Default value: `$minio::manage_home`
 
 ##### <a name="owner"></a>`owner`
 
 Data type: `String`
 
-The user owning minio and its' files.
+The user owning minio and its' files. Default: 'minio'
 
 Default value: `$minio::owner`
 
@@ -286,7 +328,7 @@ Default value: `$minio::owner`
 
 Data type: `String`
 
-The group owning minio and its' files.
+The group owning minio and its' files. Default: 'minio'
 
 Default value: `$minio::group`
 
@@ -295,6 +337,22 @@ Default value: `$minio::group`
 Data type: `Stdlib::HTTPUrl`
 
 Download base URL for the server. Can be used for local mirrors.
+
+Default value: `$minio::base_url`
+
+##### <a name="home"></a>`home`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Qualified path to the users' home directory. Default: empty
+
+Default value: `$minio::home`
+
+##### <a name="base_url"></a>`base_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+Download base URL for the server. Default: Github. Can be used for local mirrors.
 
 Default value: `$minio::base_url`
 
@@ -318,7 +376,7 @@ Default value: `$minio::checksum`
 
 Data type: `String`
 
-Type of checksum used to verify the binary being installed.
+Type of checksum used to verify the binary being installed. Default: `sha256`
 
 Default value: `$minio::checksum_type`
 
@@ -326,7 +384,7 @@ Default value: `$minio::checksum_type`
 
 Data type: `Stdlib::Absolutepath`
 
-Directory holding Minio configuration file./minio`
+Directory holding Minio configuration file. Default: `/etc/minio`
 
 Default value: `$minio::configuration_directory`
 
@@ -334,7 +392,7 @@ Default value: `$minio::configuration_directory`
 
 Data type: `Stdlib::Absolutepath`
 
-Target directory to hold the minio installation./minio`
+Target directory to hold the minio installation. Default: `/opt/minio`
 
 Default value: `$minio::installation_directory`
 
@@ -342,7 +400,7 @@ Default value: `$minio::installation_directory`
 
 Data type: `Stdlib::Absolutepath`
 
-Directory where minio will keep all data./minio`
+Directory where minio will keep all data. Default: `/var/minio`
 
 Default value: `$minio::storage_root`
 
@@ -374,7 +432,7 @@ Default value: `$minio::configuration`
 
 Data type: `Boolean`
 
-Should we manage a server service definition for Minio?
+Should we manage a server service definition for Minio? Default: `true`
 
 Default value: `$minio::manage_service`
 
@@ -382,7 +440,7 @@ Default value: `$minio::manage_service`
 
 Data type: `Stdlib::Ensure::Service`
 
-Defines the state of the minio server service.
+Defines the state of the minio server service. Default: `running`
 
 Default value: `$minio::service_ensure`
 
@@ -715,7 +773,7 @@ Which service provider do we use?
 
 Default value: `$minio::server::service_provider`
 
-### <a name="miniouser"></a>`minio::user`
+### <a name="minioserveruser"></a>`minio::server::user`
 
 Copyright
 ---------
@@ -727,7 +785,7 @@ Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 ##### 
 
 ```puppet
-class {'minio::user':
+class {'minio::server::user':
       manage_user  => true,
       manage_group => true,
       manage_home  => true,
@@ -739,7 +797,7 @@ class {'minio::user':
 
 #### Parameters
 
-The following parameters are available in the `minio::user` class:
+The following parameters are available in the `minio::server::user` class:
 
 * [`manage_user`](#manage_user)
 * [`manage_group`](#manage_group)
@@ -754,7 +812,7 @@ Data type: `Boolean`
 
 Should we manage provisioning the user?
 
-Default value: `$minio::manage_user`
+Default value: `$minio::server::manage_user`
 
 ##### <a name="manage_group"></a>`manage_group`
 
@@ -762,7 +820,7 @@ Data type: `Boolean`
 
 Should we manage provisioning the group?
 
-Default value: `$minio::manage_group`
+Default value: `$minio::server::manage_group`
 
 ##### <a name="manage_home"></a>`manage_home`
 
@@ -770,7 +828,7 @@ Data type: `Boolean`
 
 Should we manage provisioning the home directory?
 
-Default value: `$minio::manage_home`
+Default value: `$minio::server::manage_home`
 
 ##### <a name="owner"></a>`owner`
 
@@ -778,7 +836,7 @@ Data type: `String`
 
 The user owning minio and its' files.
 
-Default value: `$minio::owner`
+Default value: `$minio::server::owner`
 
 ##### <a name="group"></a>`group`
 
@@ -786,7 +844,7 @@ Data type: `String`
 
 The group owning minio and its' files.
 
-Default value: `$minio::group`
+Default value: `$minio::server::group`
 
 ##### <a name="home"></a>`home`
 
@@ -794,5 +852,5 @@ Data type: `Optional[Stdlib::Absolutepath]`
 
 Qualified path to the users' home directory.
 
-Default value: `$minio::home`
+Default value: `$minio::server::home`
 

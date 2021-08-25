@@ -1,8 +1,8 @@
 # @summary
-#   Manages user for the minio installations.
+#   Manages user for the minio server installations.
 #
 # @example
-#   class {'minio::user':
+#   class {'minio::server::user':
 #         manage_user  => true,
 #         manage_group => true,
 #         manage_home  => true,
@@ -32,13 +32,13 @@
 #
 # Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 #
-class minio::user (
-  Boolean                                 $manage_user                 = $minio::manage_user,
-  Boolean                                 $manage_group                = $minio::manage_group,
-  Boolean                                 $manage_home                 = $minio::manage_home,
-  String                                  $owner                       = $minio::owner,
-  String                                  $group                       = $minio::group,
-  Optional[Stdlib::Absolutepath]          $home                        = $minio::home,
+class minio::server::user (
+  Boolean                                 $manage_user                 = $minio::server::manage_user,
+  Boolean                                 $manage_group                = $minio::server::manage_group,
+  Boolean                                 $manage_home                 = $minio::server::manage_home,
+  String                                  $owner                       = $minio::server::owner,
+  String                                  $group                       = $minio::server::group,
+  Optional[Stdlib::Absolutepath]          $home                        = $minio::server::home,
   ) {
 
   if ($manage_home) {
