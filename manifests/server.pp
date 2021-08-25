@@ -3,29 +3,32 @@
 #
 # @example
 #   class { 'minio::server':
-#       package_ensure          => 'present',
-#       owner                   => 'minio',
-#       group                   => 'minio',
-#       base_url                => 'https://dl.minio.io/server/minio/release',
-#       version                 => 'RELEASE.2021-08-20T18-32-01Z',
-#       checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
-#       checksum_type           => 'sha256',
-#       configuration_directory => '/etc/minio',
-#       installation_directory  => '/opt/minio',
-#       storage_root            => '/var/minio',
-#       listen_ip               => '127.0.0.1',
-#       listen_port             => 9000,
-#       configuration           => {
+#       manage_server_installation => true,
+#       package_ensure             => 'present',
+#       owner                      => 'minio',
+#       group                      => 'minio',
+#       base_url                   => 'https://dl.minio.io/server/minio/release',
+#       version                    => 'RELEASE.2021-08-20T18-32-01Z',
+#       checksum                   => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+#       checksum_type              => 'sha256',
+#       configuration_directory    => '/etc/minio',
+#       installation_directory     => '/opt/minio',
+#       storage_root               => '/var/minio',
+#       listen_ip                  => '127.0.0.1',
+#       listen_port                => 9000,
+#       configuration              => {
 #           'MINIO_ACCESS_KEY'  => 'admin',
 #           'MINIO_SECRET_KEY'  => 'password',
 #           'MINIO_REGION_NAME' => 'us-east-1',
 #       },
-#       manage_service          => true,
-#       service_template        => 'minio/systemd.erb',
-#       service_provider        => 'systemd',
-#       service_ensure          => 'running',
+#       manage_service             => true,
+#       service_template           => 'minio/systemd.erb',
+#       service_provider           => 'systemd',
+#       service_ensure             => 'running',
 #   }
 #
+# @param [Boolean] manage_server_installation
+#   Decides if puppet should manage the minio server installation.
 # @param [Enum['present', 'absent']] package_ensure
 #   Decides if the `minio` binary will be installed. Default: `present`
 # @param [Boolean] manage_user
@@ -80,6 +83,7 @@
 # Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 #
 class minio::server (
+  Boolean $manage_server_installation = $minio::manage_server_installation,
   Enum['present', 'absent'] $package_ensure = $minio::package_ensure,
 
   Boolean $manage_user = $minio::manage_user,
@@ -105,17 +109,18 @@ class minio::server (
   Stdlib::Ensure::Service $service_ensure = $minio::service_ensure,
   String $service_template = $minio::service_template,
   String $service_provider = $minio::service_provider,
-  ) {
+) {
+  if ($manage_server_installation) {
+    include ::minio::server::user
+    include ::minio::server::install
+    include ::minio::server::config
+    include ::minio::server::service
 
-  include ::minio::server::user
-  include ::minio::server::install
-  include ::minio::server::config
-  include ::minio::server::service
+    Class['minio::server::user']
+    -> Class['minio::server::install']
+    -> Class['minio::server::config']
+    -> Class['minio::server::service']
 
-  Class['minio::server::user']
-  -> Class['minio::server::install']
-  -> Class['minio::server::config']
-  -> Class['minio::server::service']
-
-  Class['minio::server::install', 'minio::server::config'] ~> Class['minio::server::service']
+    Class['minio::server::install', 'minio::server::config'] ~> Class['minio::server::service']
+  }
 }

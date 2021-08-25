@@ -7,6 +7,7 @@
 ### Classes
 
 * [`minio`](#minio): Manages a Minio installation on various Linux/BSD operating systems.
+* [`minio::client`](#minioclient): Manages a Minio client (mc) installation on various Linux/BSD operating systems.
 * [`minio::server`](#minioserver): Manages a Minio server installation on various Linux/BSD operating systems.
 * [`minio::server::config`](#minioserverconfig): Applies configuration for `::minio::server` class to system.
 * [`minio::server::install`](#minioserverinstall): Installs minio server and required service definitions.
@@ -28,31 +29,35 @@ Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 
 ```puppet
 class { 'minio':
-    package_ensure          => 'present',
-    manage_user             => true,
-    manage_group            => true,
-    manage_home             => true,
-    owner                   => 'minio',
-    group                   => 'minio',
-    home                    => '/home/minio',
-    base_url                => 'https://dl.minio.io/server/minio/release',
-    version                 => 'RELEASE.2021-08-20T18-32-01Z',
-    checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
-    checksum_type           => 'sha256',
-    configuration_directory => '/etc/minio',
-    installation_directory  => '/opt/minio',
-    storage_root            => '/var/minio',
-    listen_ip               => '127.0.0.1',
-    listen_port             => 9000,
-    configuration           => {
+    package_ensure                => 'present',
+    owner                         => 'minio',
+    group                         => 'minio',
+    base_url                      => 'https://dl.minio.io/server/minio/release',
+    version                       => 'RELEASE.2021-08-20T18-32-01Z',
+    checksum                      => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+    checksum_type                 => 'sha256',
+    configuration_directory       => '/etc/minio',
+    installation_directory        => '/opt/minio',
+    storage_root                  => '/var/minio',
+    listen_ip                     => '127.0.0.1',
+    listen_port                   => 9000,
+    configuration                 => {
         'MINIO_ACCESS_KEY'  => 'admin',
         'MINIO_SECRET_KEY'  => 'password',
         'MINIO_REGION_NAME' => 'us-east-1',
     },
-    manage_service          => true,
-    service_template        => 'minio/systemd.erb',
-    service_provider        => 'systemd',
-    service_ensure          => 'running',
+    manage_service                => true,
+    service_template              => 'minio/systemd.erb',
+    service_provider              => 'systemd',
+    service_ensure                => 'running',
+    manage_server_installation    => true,
+    manage_client_installation    => true,
+    client_package_ensure         => 'present',
+    client_base_url               => 'https://dl.minio.io/client/mc/release',
+    client_version                => 'RELEASE.2021-07-27T06-46-19Z',
+    client_checksum               => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
+    client_checksum_type          => 'sha256',
+    client_installation_directory => '/opt/minioclient',
 }
 ```
 
@@ -81,6 +86,14 @@ The following parameters are available in the `minio` class:
 * [`service_ensure`](#service_ensure)
 * [`service_template`](#service_template)
 * [`service_provider`](#service_provider)
+* [`manage_server_installation`](#manage_server_installation)
+* [`manage_client_installation`](#manage_client_installation)
+* [`client_package_ensure`](#client_package_ensure)
+* [`client_base_url`](#client_base_url)
+* [`client_version`](#client_version)
+* [`client_checksum`](#client_checksum)
+* [`client_checksum_type`](#client_checksum_type)
+* [`client_installation_directory`](#client_installation_directory)
 
 ##### <a name="package_ensure"></a>`package_ensure`
 
@@ -134,19 +147,19 @@ Download base URL for the server. Default: Github. Can be used for local mirrors
 
 Data type: `String`
 
-Release version to be installed.
+Server release version to be installed.
 
 ##### <a name="checksum"></a>`checksum`
 
 Data type: `String`
 
-Checksum for the binary.
+Checksum for the server binary.
 
 ##### <a name="checksum_type"></a>`checksum_type`
 
 Data type: `String`
 
-Type of checksum used to verify the binary being installed. Default: `sha256`
+Type of checksum used to verify the server binary being installed. Default: `sha256`
 
 ##### <a name="configuration_directory"></a>`configuration_directory`
 
@@ -208,17 +221,141 @@ Data type: `String`
 
 Which service provider do we use?
 
+##### <a name="manage_server_installation"></a>`manage_server_installation`
+
+Data type: `Boolean`
+
+Decides if puppet should manage the minio server installation.
+
+##### <a name="manage_client_installation"></a>`manage_client_installation`
+
+Data type: `Boolean`
+
+Decides if puppet should manage the minio client installation.
+
+##### <a name="client_package_ensure"></a>`client_package_ensure`
+
+Data type: `Enum['present', 'absent']`
+
+Decides if the `mc` client binary will be installed. Default: `present`
+
+##### <a name="client_base_url"></a>`client_base_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+Download base URL for the minio client. Default: Github. Can be used for local mirrors.
+
+##### <a name="client_version"></a>`client_version`
+
+Data type: `String`
+
+Client release version to be installed.
+
+##### <a name="client_checksum"></a>`client_checksum`
+
+Data type: `String`
+
+Checksum for the client binary.
+
+##### <a name="client_checksum_type"></a>`client_checksum_type`
+
+Data type: `String`
+
+Type of checksum used to verify the client binary being installed. Default: `sha256`
+
+##### <a name="client_installation_directory"></a>`client_installation_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Target directory to hold the minio client installation. Default: `/opt/minioclient`
+
 ### <a name="minioclient"></a>`minio::client`
 
-A description of what this class does
+Manages a Minio client (mc) installation on various Linux/BSD operating systems.
 
 #### Examples
 
 ##### 
 
 ```puppet
-include minio::client
+class { 'minio::client':
+    manage_client_installation => true,
+    package_ensure             => 'present',
+    base_url                   => 'https://dl.minio.io/client/mc/release',
+    version                    => 'RELEASE.2021-07-27T06-46-19Z',
+    checksum                   => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
+    checksum_type              => 'sha256',
+    installation_directory     => '/opt/minioclient',
+}
 ```
+
+#### Parameters
+
+The following parameters are available in the `minio::client` class:
+
+* [`manage_client_installation`](#manage_client_installation)
+* [`package_ensure`](#package_ensure)
+* [`base_url`](#base_url)
+* [`version`](#version)
+* [`checksum`](#checksum)
+* [`checksum_type`](#checksum_type)
+* [`installation_directory`](#installation_directory)
+
+##### <a name="manage_client_installation"></a>`manage_client_installation`
+
+Data type: `Boolean`
+
+Decides if puppet should manage the minio client installation.
+
+Default value: `$minio::manage_client_installation`
+
+##### <a name="package_ensure"></a>`package_ensure`
+
+Data type: `Enum['present', 'absent']`
+
+Decides if the `mc` client binary will be installed. Default: `present`
+
+Default value: `$minio::client_package_ensure`
+
+##### <a name="base_url"></a>`base_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+Download base URL for the minio client. Default: Github. Can be used for local mirrors.
+
+Default value: `$minio::client_base_url`
+
+##### <a name="version"></a>`version`
+
+Data type: `String`
+
+Client release version to be installed.
+
+Default value: `$minio::client_version`
+
+##### <a name="checksum"></a>`checksum`
+
+Data type: `String`
+
+Checksum for the client binary.
+
+Default value: `$minio::client_checksum`
+
+##### <a name="checksum_type"></a>`checksum_type`
+
+Data type: `String`
+
+Type of checksum used to verify the client binary being installed. Default: `sha256`
+
+Default value: `$minio::client_checksum_type`
+
+##### <a name="installation_directory"></a>`installation_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Target directory to hold the minio client installation. Default: `/opt/minioclient`
+
+Default value: `$minio::client_installation_directory`
 
 ### <a name="minioserver"></a>`minio::server`
 
@@ -233,27 +370,28 @@ Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 
 ```puppet
 class { 'minio::server':
-    package_ensure          => 'present',
-    owner                   => 'minio',
-    group                   => 'minio',
-    base_url                => 'https://dl.minio.io/server/minio/release',
-    version                 => 'RELEASE.2021-08-20T18-32-01Z',
-    checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
-    checksum_type           => 'sha256',
-    configuration_directory => '/etc/minio',
-    installation_directory  => '/opt/minio',
-    storage_root            => '/var/minio',
-    listen_ip               => '127.0.0.1',
-    listen_port             => 9000,
-    configuration           => {
+    manage_server_installation => true,
+    package_ensure             => 'present',
+    owner                      => 'minio',
+    group                      => 'minio',
+    base_url                   => 'https://dl.minio.io/server/minio/release',
+    version                    => 'RELEASE.2021-08-20T18-32-01Z',
+    checksum                   => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+    checksum_type              => 'sha256',
+    configuration_directory    => '/etc/minio',
+    installation_directory     => '/opt/minio',
+    storage_root               => '/var/minio',
+    listen_ip                  => '127.0.0.1',
+    listen_port                => 9000,
+    configuration              => {
         'MINIO_ACCESS_KEY'  => 'admin',
         'MINIO_SECRET_KEY'  => 'password',
         'MINIO_REGION_NAME' => 'us-east-1',
     },
-    manage_service          => true,
-    service_template        => 'minio/systemd.erb',
-    service_provider        => 'systemd',
-    service_ensure          => 'running',
+    manage_service             => true,
+    service_template           => 'minio/systemd.erb',
+    service_provider           => 'systemd',
+    service_ensure             => 'running',
 }
 ```
 
@@ -261,6 +399,7 @@ class { 'minio::server':
 
 The following parameters are available in the `minio::server` class:
 
+* [`manage_server_installation`](#manage_server_installation)
 * [`package_ensure`](#package_ensure)
 * [`manage_user`](#manage_user)
 * [`manage_group`](#manage_group)
@@ -283,6 +422,14 @@ The following parameters are available in the `minio::server` class:
 * [`service_ensure`](#service_ensure)
 * [`service_template`](#service_template)
 * [`service_provider`](#service_provider)
+
+##### <a name="manage_server_installation"></a>`manage_server_installation`
+
+Data type: `Boolean`
+
+Decides if puppet should manage the minio server installation.
+
+Default value: `$minio::manage_server_installation`
 
 ##### <a name="package_ensure"></a>`package_ensure`
 

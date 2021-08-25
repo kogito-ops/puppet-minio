@@ -20,3 +20,11 @@ minio::manage_service: true
 minio::service_ensure: 'running'
 minio::service_template: 'minio/systemd.erb'
 minio::service_provider: 'systemd'
+minio::manage_server_installation: true
+minio::manage_client_installation: true
+minio::client_package_ensure: 'present'
+minio::client_base_url: 'https://dl.minio.io/client/mc/release'
+minio::client_version: 'RELEASE.2021-07-27T06-46-19Z'
+minio::client_checksum: '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be'
+minio::client_checksum_type: 'sha256'
+minio::client_installation_directory: '/opt/minioclient'
