@@ -14,9 +14,6 @@
 #           'MINIO_REGION_NAME' => 'us-east-1',
 #       },
 #   }
-#   -> service {'minio':
-#     ensure => 'running'
-#   }
 #
 # @param [String] owner
 #   The user owning minio and its' files.
@@ -61,7 +58,5 @@ class minio::server::config (
     owner   => $owner,
     group   => $group,
     mode    => '0644',
-    #TODO do we need this notify?
-    # notify  => Service['minio']
   }
 }

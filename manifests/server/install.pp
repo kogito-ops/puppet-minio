@@ -19,9 +19,6 @@
 #       service_template        => 'minio/systemd.erb',
 #       service_provider        => 'systemd',
 #   }
-#   -> service {'minio':
-#     ensure => 'running'
-#   }
 #
 # @param [Enum['present', 'absent']] package_ensure
 #   Decides if the `minio` binary will be installed.
@@ -131,7 +128,6 @@ class minio::server::install (
       group => $group,
       mode  => '0744',
       owner => $owner,
-      # notify => Service['minio'],
     }
   }
 
@@ -158,8 +154,6 @@ class minio::server::install (
       'systemd': {
         ::systemd::unit_file { 'minio.service':
           content => template($service_template),
-          # before  => Service['minio'],
-          # notify  => Service['minio']
         }
       }
       default: {
