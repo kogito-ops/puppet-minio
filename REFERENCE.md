@@ -7,12 +7,18 @@
 ### Classes
 
 * [`minio`](#minio): Manages a Minio installation on various Linux/BSD operating systems.
-* [`minio::client`](#minioclient): Manages a Minio client (mc) installation on various Linux/BSD operating systems.
+* [`minio::client`](#minioclient): Manages a Minio client (mc) on various Linux/BSD operating systems.
+* [`minio::client::config`](#minioclientconfig): Manages a Minio client (mc) configuration various Linux/BSD operating systems.
+* [`minio::client::install`](#minioclientinstall): Manages a Minio client (mc) installation various Linux/BSD operating systems.
 * [`minio::server`](#minioserver): Manages a Minio server installation on various Linux/BSD operating systems.
 * [`minio::server::config`](#minioserverconfig): Applies configuration for `::minio::server` class to system.
 * [`minio::server::install`](#minioserverinstall): Installs minio server and required service definitions.
 * [`minio::server::service`](#minioserverservice): Manages services for the `::minio::server` class.
 * [`minio::server::user`](#minioserveruser): Manages user for the minio server installations.
+
+### Resource types
+
+* [`minio_client_alias`](#minio_client_alias): Manages minio client aliases
 
 ## Classes
 
@@ -94,6 +100,9 @@ The following parameters are available in the `minio` class:
 * [`client_checksum`](#client_checksum)
 * [`client_checksum_type`](#client_checksum_type)
 * [`client_installation_directory`](#client_installation_directory)
+* [`client_binary_name`](#client_binary_name)
+* [`client_aliases`](#client_aliases)
+* [`purge_unmanaged_client_aliases`](#purge_unmanaged_client_aliases)
 
 ##### <a name="package_ensure"></a>`package_ensure`
 
@@ -269,9 +278,27 @@ Data type: `Stdlib::Absolutepath`
 
 Target directory to hold the minio client installation. Default: `/opt/minioclient`
 
+##### <a name="client_binary_name"></a>`client_binary_name`
+
+Data type: `String`
+
+Target name of the minio client binary. Use this to avoid collisions with another `mc`.
+
+##### <a name="client_aliases"></a>`client_aliases`
+
+Data type: `Hash`
+
+List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
+
+##### <a name="purge_unmanaged_client_aliases"></a>`purge_unmanaged_client_aliases`
+
+Data type: `Boolean`
+
+Decides if puppet should purge unmanaged minio client aliases
+
 ### <a name="minioclient"></a>`minio::client`
 
-Manages a Minio client (mc) installation on various Linux/BSD operating systems.
+Manages a Minio client (mc) on various Linux/BSD operating systems.
 
 #### Examples
 
@@ -285,7 +312,19 @@ class { 'minio::client':
     version                    => 'RELEASE.2021-07-27T06-46-19Z',
     checksum                   => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
     checksum_type              => 'sha256',
-    installation_directory     => '/opt/minioclient',
+    installation_directory     => '/usr/local/bin',
+    binary_name                => 'minio-client',
+    aliases                    => {
+      'default' => {
+        'ensure'              => 'present',
+        'endpoint'            => 'http://localhost:9000',
+        'access_key'          => 'admin',
+        'secret_key'          => Sensitive('password'), # can also be a string
+        'api_signature'       => 'S3v4', # optional
+        'path_lookup_support' =>'on',    # optional
+      }
+    },
+    purge_unmanaged_aliases    => true
 }
 ```
 
@@ -300,6 +339,9 @@ The following parameters are available in the `minio::client` class:
 * [`checksum`](#checksum)
 * [`checksum_type`](#checksum_type)
 * [`installation_directory`](#installation_directory)
+* [`aliases`](#aliases)
+* [`purge_unmanaged_aliases`](#purge_unmanaged_aliases)
+* [`binary_name`](#binary_name)
 
 ##### <a name="manage_client_installation"></a>`manage_client_installation`
 
@@ -356,6 +398,165 @@ Data type: `Stdlib::Absolutepath`
 Target directory to hold the minio client installation. Default: `/opt/minioclient`
 
 Default value: `$minio::client_installation_directory`
+
+##### <a name="aliases"></a>`aliases`
+
+Data type: `Hash`
+
+List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
+
+Default value: `$minio::client_aliases`
+
+##### <a name="purge_unmanaged_aliases"></a>`purge_unmanaged_aliases`
+
+Data type: `Boolean`
+
+Decides if puppet should purge unmanaged minio client aliases
+
+Default value: `$minio::purge_unmanaged_client_aliases`
+
+##### <a name="binary_name"></a>`binary_name`
+
+Data type: `String`
+
+
+
+Default value: `$minio::client_binary_name`
+
+### <a name="minioclientconfig"></a>`minio::client::config`
+
+Manages a Minio client (mc) configuration various Linux/BSD operating systems.
+
+#### Examples
+
+##### 
+
+```puppet
+class { 'minio::client::config':
+    aliases                 => {
+      'default' => {
+        'ensure'              => 'present',
+        'endpoint'            => 'http://localhost:9000',
+        'access_key'          => 'admin',
+        'secret_key'          => Sensitive('password'), # can also be a string
+        'api_signature'       => 'S3v4', # optional
+        'path_lookup_support' =>'on',    # optional
+      }
+    },
+    purge_unmanaged_aliases => true
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `minio::client::config` class:
+
+* [`aliases`](#aliases)
+* [`purge_unmanaged_aliases`](#purge_unmanaged_aliases)
+
+##### <a name="aliases"></a>`aliases`
+
+Data type: `Hash`
+
+List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
+
+Default value: `$minio::client::aliases`
+
+##### <a name="purge_unmanaged_aliases"></a>`purge_unmanaged_aliases`
+
+Data type: `Boolean`
+
+Decides if puppet should purge unmanaged minio client aliases
+
+Default value: `$minio::client::purge_unmanaged_aliases`
+
+### <a name="minioclientinstall"></a>`minio::client::install`
+
+Manages a Minio client (mc) installation various Linux/BSD operating systems.
+
+#### Examples
+
+##### 
+
+```puppet
+class { 'minio::client::install':
+    package_ensure         => 'present',
+    base_url               => 'https://dl.minio.io/client/mc/release',
+    version                => 'RELEASE.2021-07-27T06-46-19Z',
+    checksum               => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
+    checksum_type          => 'sha256',
+    installation_directory => '/usr/local/bin',
+    binary_name            => 'minio-client'
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `minio::client::install` class:
+
+* [`package_ensure`](#package_ensure)
+* [`base_url`](#base_url)
+* [`version`](#version)
+* [`checksum`](#checksum)
+* [`checksum_type`](#checksum_type)
+* [`installation_directory`](#installation_directory)
+* [`binary_name`](#binary_name)
+
+##### <a name="package_ensure"></a>`package_ensure`
+
+Data type: `Enum['present', 'absent']`
+
+Decides if the `mc` client binary will be installed. Default: `present`
+
+Default value: `$minio::client::package_ensure`
+
+##### <a name="base_url"></a>`base_url`
+
+Data type: `Stdlib::HTTPUrl`
+
+Download base URL for the minio client. Default: Github. Can be used for local mirrors.
+
+Default value: `$minio::client::base_url`
+
+##### <a name="version"></a>`version`
+
+Data type: `String`
+
+Client release version to be installed.
+
+Default value: `$minio::client::version`
+
+##### <a name="checksum"></a>`checksum`
+
+Data type: `String`
+
+Checksum for the client binary.
+
+Default value: `$minio::client::checksum`
+
+##### <a name="checksum_type"></a>`checksum_type`
+
+Data type: `String`
+
+Type of checksum used to verify the client binary being installed. Default: `sha256`
+
+Default value: `$minio::client::checksum_type`
+
+##### <a name="installation_directory"></a>`installation_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Target directory to hold the minio client installation. Default: `/opt/minioclient`
+
+Default value: `$minio::client::installation_directory`
+
+##### <a name="binary_name"></a>`binary_name`
+
+Data type: `String`
+
+
+
+Default value: `$minio::client::binary_name`
 
 ### <a name="minioserver"></a>`minio::server`
 
@@ -631,9 +832,6 @@ class { 'minio::server::config':
         'MINIO_REGION_NAME' => 'us-east-1',
     },
 }
--> service {'minio':
-  ensure => 'running'
-}
 ```
 
 #### Parameters
@@ -723,9 +921,6 @@ class { 'minio::server::install':
     manage_service          => true,
     service_template        => 'minio/systemd.erb',
     service_provider        => 'systemd',
-}
--> service {'minio':
-  ensure => 'running'
 }
 ```
 
@@ -1000,4 +1195,93 @@ Data type: `Optional[Stdlib::Absolutepath]`
 Qualified path to the users' home directory.
 
 Default value: `$minio::server::home`
+
+## Resource types
+
+### <a name="minio_client_alias"></a>`minio_client_alias`
+
+**Autorequires**:
+* `Class[minio::client]`
+
+#### Examples
+
+##### 
+
+```puppet
+minio_client_alias { 'localminio':
+  ensure              => 'present',
+  endpoint            => 'http://localhost:9000',
+  access_key          => 'admin',
+  secret_key          => 'password',
+  api_signature       => 'S3v4',
+  path_lookup_support =>'on',
+}
+```
+
+##### 
+
+```puppet
+minio_client_alias { 'default':
+  ensure     => 'present',
+  endpoint   => 'http://localhost:9000',
+  access_key => 'admin',
+  secret_key => Sensitive('password'),
+}
+```
+
+#### Properties
+
+The following properties are available in the `minio_client_alias` type.
+
+##### `access_key`
+
+Data type: `String[1]`
+
+The API access key
+
+##### `api_signature`
+
+Data type: `Optional[String[1]]`
+
+The API signature
+
+##### `endpoint`
+
+Data type: `String[1]`
+
+The API endpoint url
+
+##### `ensure`
+
+Data type: `Enum[present, absent]`
+
+Whether this resource should be present or absent on the target system.
+
+Default value: `present`
+
+##### `path_lookup_support`
+
+Data type: `Optional[Enum['on', 'off', 'auto']]`
+
+Indicate whether dns or path style url requests are supported by the server.
+
+##### `secret_key`
+
+Data type: `Variant[Sensitive[String[1]], String[1]]`
+
+The API access secret
+
+#### Parameters
+
+The following parameters are available in the `minio_client_alias` type.
+
+* [`name`](#name)
+
+##### <a name="name"></a>`name`
+
+namevar
+
+Data type: `String`
+
+The name of the resource you want to manage.
 

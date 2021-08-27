@@ -1,5 +1,5 @@
-# @summary Manages a Minio client (mc) installation on various Linux/BSD operating systems.
-#
+# @summary
+#   Manages a Minio client (mc) on various Linux/BSD operating systems.
 #
 # @example
 #   class { 'minio::client':
@@ -9,7 +9,19 @@
 #       version                    => 'RELEASE.2021-07-27T06-46-19Z',
 #       checksum                   => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
 #       checksum_type              => 'sha256',
-#       installation_directory     => '/opt/minioclient',
+#       installation_directory     => '/usr/local/bin',
+#       binary_name                => 'minio-client',
+#       aliases                    => {
+#         'default' => {
+#           'ensure'              => 'present',
+#           'endpoint'            => 'http://localhost:9000',
+#           'access_key'          => 'admin',
+#           'secret_key'          => Sensitive('password'), # can also be a string
+#           'api_signature'       => 'S3v4', # optional
+#           'path_lookup_support' =>'on',    # optional
+#         }
+#       },
+#       purge_unmanaged_aliases    => true
 #   }
 #
 # @param [Boolean] manage_client_installation
@@ -26,6 +38,10 @@
 #   Type of checksum used to verify the client binary being installed. Default: `sha256`
 # @param [Stdlib::Absolutepath] installation_directory
 #   Target directory to hold the minio client installation. Default: `/opt/minioclient`
+# @param [Hash] aliases
+#   List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
+# @param [Boolean] purge_unmanaged_aliases
+#   Decides if puppet should purge unmanaged minio client aliases
 #
 # @author Daniel S. Reichenbach <daniel@kogitoapp.com>
 # @author Evgeny Soynov <esoynov@kogito.network>
@@ -38,43 +54,14 @@ class minio::client(
   String $checksum                                      = $minio::client_checksum,
   String $checksum_type                                 = $minio::client_checksum_type,
   Stdlib::Absolutepath $installation_directory          = $minio::client_installation_directory,
+  String $binary_name                                   = $minio::client_binary_name,
+  Hash $aliases                                         = $minio::client_aliases,
+  Boolean $purge_unmanaged_aliases                      = $minio::purge_unmanaged_client_aliases,
 ) {
   if ($manage_client_installation) {
-    file { $installation_directory:
-      ensure  => 'directory',
-      owner   => 'root',
-      group   => 'root',
-      recurse => true,
-    }
+    include ::minio::client::install
+    include ::minio::client::config
 
-    $kernel_down=downcase($::kernel)
-
-    case $::architecture {
-      /(x86_64)/: {
-        $arch = 'amd64'
-      }
-      /(x86)/: {
-        fail('Minio client does not support x86 architecture')
-      }
-      default: {
-        $arch = $::architecture
-      }
-    }
-
-    $source_url="${base_url}/${kernel_down}-${arch}/archive/mc.${version}"
-
-    archive::download { "${installation_directory}/mc":
-      ensure        => $package_ensure,
-      checksum      => true,
-      digest_string => $checksum,
-      digest_type   => $checksum_type,
-      url           => $source_url,
-    }
-    -> file {"${installation_directory}/mc":
-      ensure => $package_ensure,
-      mode   => '0755',
-      owner  => 'root',
-      group  => 'root',
-    }
+    Class['minio::client::install'] -> Class['minio::client::config']
   }
 }

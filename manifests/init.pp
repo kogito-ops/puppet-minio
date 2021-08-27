@@ -92,6 +92,12 @@
 #   Type of checksum used to verify the client binary being installed. Default: `sha256`
 # @param [Stdlib::Absolutepath] client_installation_directory
 #   Target directory to hold the minio client installation. Default: `/opt/minioclient`
+# @param [String] client_binary_name
+#   Target name of the minio client binary. Use this to avoid collisions with another `mc`.
+# @param [Hash] client_aliases
+#   List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
+# @param [Boolean] purge_unmanaged_client_aliases
+#   Decides if puppet should purge unmanaged minio client aliases
 #
 # @author Daniel S. Reichenbach <daniel@kogitoapp.com>
 # @author Evgeny Soynov <esoynov@kogito.network>
@@ -136,6 +142,9 @@ class minio (
   String $client_checksum,
   String $client_checksum_type,
   Stdlib::Absolutepath $client_installation_directory,
+  String $client_binary_name,
+  Hash $client_aliases,
+  Boolean $purge_unmanaged_client_aliases,
   ) {
 
   include ::minio::server
