@@ -47,4 +47,22 @@ PUPPETCODE
   describe port(9000) do
     it { is_expected.to be_listening }
   end
+
+  describe file('/usr/local/bin/minio-client') do
+    it {
+      is_expected.to be_file
+      is_expected.to be_mode 755
+      is_expected.to be_owned_by 'root'
+      is_expected.to be_grouped_into 'root'
+    }
+  end
+
+  describe file('/root/.minioclient') do
+    it {
+      is_expected.to be_symlink
+      is_expected.to be_linked_to '/usr/local/bin/minio-client'
+      is_expected.to be_owned_by 'root'
+      is_expected.to be_grouped_into 'root'
+    }
+  end
 end

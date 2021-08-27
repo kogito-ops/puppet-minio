@@ -34,13 +34,13 @@ class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi
     PuppetX::Minio::Client.execute("alias remove #{name}")
   end
 
-  def insync?(context, name, property_name, is_hash, should_hash)
+  def insync?(context, _name, property_name, is_hash, should_hash)
     context.debug("Checking whether #{property_name} is out of sync")
     case property_name
     when :secret_key
-        is = unwrap_maybe_sensitive(is_hash[property_name])
-        should = unwrap_maybe_sensitive(should_hash[property_name])
-        return is === should
+      is = unwrap_maybe_sensitive(is_hash[property_name])
+      should = unwrap_maybe_sensitive(should_hash[property_name])
+      return is == should
     end
   end
 

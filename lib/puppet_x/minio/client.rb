@@ -30,7 +30,7 @@ module PuppetX # rubocop:disable Style/ClassAndModuleChildren
           raise Puppet::ExecutionFailure, errormsg.join
         end
 
-        class_variable_set(:@@client, true)
+        class_variable_set(:@@client_ensured, true)
       end
 
       def self.installed?

@@ -16,15 +16,16 @@ describe 'minio::client' do
           checksum: '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
           checksum_type: 'sha256',
           installation_directory: '/opt/minioclient',
+          binary_name: 'minio-client',
+          aliases: {},
+          purge_unmanaged_aliases: false,
         }
       end
 
       context 'with all defaults' do
         it {
-          is_expected.to compile.with_all_deps
-          is_expected.to contain_archive__download('/opt/minioclient/mc')
-          is_expected.to contain_file('/opt/minioclient')
-          is_expected.to contain_file('/opt/minioclient/mc').that_requires('Archive::Download[/opt/minioclient/mc]')
+          is_expected.to contain_class('minio::client::install')
+          is_expected.to contain_class('minio::client::config').that_requires('Class[minio::client::install]')
         }
       end
 
