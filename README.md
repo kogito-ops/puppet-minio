@@ -42,90 +42,90 @@ See [REFERENCE.md](REFERENCE.md) for the full reference.
 
 ```puppet
 class { 'minio':
-    package_ensure          => 'present',
-    manage_user             => true,
-    manage_group            => true,
-    manage_home             => true,
-    owner                   => 'minio',
-    group                   => 'minio',
-    home                    => '/home/minio',
-    version                 => 'RELEASE.2021-08-20T18-32-01Z',
-    checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
-    checksum_type           => 'sha256',
-    configuration_directory => '/etc/minio',
-    installation_directory  => '/opt/minio',
-    storage_root            => '/var/minio',
-    listen_ip               => '127.0.0.1',
-    listen_port             => 9000,
-    configuration           => {
+    package_ensure                => 'present',
+    owner                         => 'minio',
+    group                         => 'minio',
+    base_url                      => 'https://dl.minio.io/server/minio/release',
+    version                       => 'RELEASE.2021-08-20T18-32-01Z',
+    checksum                      => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+    checksum_type                 => 'sha256',
+    configuration_directory       => '/etc/minio',
+    installation_directory        => '/opt/minio',
+    storage_root                  => '/var/minio',
+    listen_ip                     => '127.0.0.1',
+    listen_port                   => 9000,
+    configuration                 => {
         'MINIO_ACCESS_KEY'  => 'admin',
         'MINIO_SECRET_KEY'  => 'password',
         'MINIO_REGION_NAME' => 'us-east-1',
     },
-    manage_service          => true,
-    service_template        => 'minio/systemd.erb',
-    service_provider        => 'systemd',
+    manage_service                => true,
+    service_template              => 'minio/systemd.erb',
+    service_provider              => 'systemd',
+    service_ensure                => 'running',
+    manage_server_installation    => true,
+    manage_client_installation    => true,
+    client_package_ensure         => 'present',
+    client_base_url               => 'https://dl.minio.io/client/mc/release',
+    client_version                => 'RELEASE.2021-07-27T06-46-19Z',
+    client_checksum               => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
+    client_checksum_type          => 'sha256',
+    client_installation_directory => '/opt/minioclient',
 }
 ```
 
-### Class: `minio::server::user`
+### Class: `minio::server`
 
 ```puppet
-class { 'minio::server::user':
-    manage_user  => true,
-    manage_group => true,
-    manage_home  => true,
-    owner        => 'minio',
-    group        => 'minio',
-    home         => '/home/minio',
-}
-```
-
-### Class: `minio::server::install`
-
-```puppet
-class { 'minio::server::install':
-    package_ensure          => 'present',
-    owner                   => 'minio',
-    group                   => 'minio',
-    base_url                => 'https://dl.minio.io/server/minio/release',
-    version                 => 'RELEASE.2017-05-05T01-14-51Z',
-    checksum                => '59cd3fb52292712bd374a215613d6588122d93ab19d812b8393786172b51d556',
-    checksum_type           => 'sha256',
-    configuration_directory => '/etc/minio',
-    installation_directory  => '/opt/minio',
-    storage_root            => '/var/minio',
-    listen_ip               => '127.0.0.1',
-    listen_port             => 9000,
-    manage_service          => true,
-    service_template        => 'minio/systemd.erb',
-    service_provider        => 'systemd',
-}
-```
-
-### Class: `minio::server::service`
-
-```puppet
-class { 'minio::server::service':
-    manage_service => true,
-    service_provider => 'systemd',
-    service_ensure => 'running',
-}
-```
-
-### Class: `minio::server::config`
-
-```puppet
-class { 'minio::server::config':
-    configuration          => {
+class { 'minio::server':
+    manage_server_installation => true,
+    package_ensure             => 'present',
+    owner                      => 'minio',
+    group                      => 'minio',
+    base_url                   => 'https://dl.minio.io/server/minio/release',
+    version                    => 'RELEASE.2021-08-20T18-32-01Z',
+    checksum                   => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+    checksum_type              => 'sha256',
+    configuration_directory    => '/etc/minio',
+    installation_directory     => '/opt/minio',
+    storage_root               => '/var/minio',
+    listen_ip                  => '127.0.0.1',
+    listen_port                => 9000,
+    configuration              => {
         'MINIO_ACCESS_KEY'  => 'admin',
         'MINIO_SECRET_KEY'  => 'password',
         'MINIO_REGION_NAME' => 'us-east-1',
     },
-    owner                  => 'minio',
-    group                  => 'minio',
-    installation_directory => '/opt/minio',
-    storage_root           => '/var/minio',
+    manage_service             => true,
+    service_template           => 'minio/systemd.erb',
+    service_provider           => 'systemd',
+    service_ensure             => 'running',
+}
+```
+
+### Class: `minio::client`
+
+```puppet
+class { 'minio::client':
+    manage_client_installation => true,
+    package_ensure             => 'present',
+    base_url                   => 'https://dl.minio.io/client/mc/release',
+    version                    => 'RELEASE.2021-07-27T06-46-19Z',
+    checksum                   => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
+    checksum_type              => 'sha256',
+    installation_directory     => '/usr/local/bin',
+    binary_name                => 'minio-client',
+    aliases                    => {
+        'default' => {
+            'ensure'              => 'present',
+            'endpoint'            => 'http://localhost:9000',
+            'access_key'          => 'admin',
+            'secret_key'          => Sensitive('password'), # can also be a string
+            'api_signature'       => 'S3v4', # optional
+            'path_lookup_support' => 'on',   # optional
+        }
+    },
+    purge_unmanaged_aliases    => true
 }
 ```
 

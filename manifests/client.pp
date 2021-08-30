@@ -18,7 +18,7 @@
 #           'access_key'          => 'admin',
 #           'secret_key'          => Sensitive('password'), # can also be a string
 #           'api_signature'       => 'S3v4', # optional
-#           'path_lookup_support' =>'on',    # optional
+#           'path_lookup_support' => 'on',   # optional
 #         }
 #       },
 #       purge_unmanaged_aliases    => true
