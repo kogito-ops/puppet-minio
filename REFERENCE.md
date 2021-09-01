@@ -11,6 +11,7 @@
 * [`minio::client::config`](#minioclientconfig): Manages a Minio client (mc) configuration various Linux/BSD operating systems.
 * [`minio::client::install`](#minioclientinstall): Manages a Minio client (mc) installation various Linux/BSD operating systems.
 * [`minio::server`](#minioserver): Manages a Minio server installation on various Linux/BSD operating systems.
+* [`minio::server::certs`](#minioservercerts): Manages minio certificate deployment.
 * [`minio::server::config`](#minioserverconfig): Applies configuration for `::minio::server` class to system.
 * [`minio::server::install`](#minioserverinstall): Installs minio server and required service definitions.
 * [`minio::server::service`](#minioserverservice): Manages services for the `::minio::server` class.
@@ -64,6 +65,20 @@ class { 'minio':
     client_checksum               => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
     client_checksum_type          => 'sha256',
     client_installation_directory => '/opt/minioclient',
+    cert_ensure                   => 'present',
+    cert_directory                => '/etc/minio/certs',
+    default_cert_configuration    => {
+      'source_path'      => 'puppet:///modules/minio/examples',
+      'source_cert_name' => 'localhost',
+      'source_key_name'  => 'localhost',
+    },
+    additional_certs              => {
+      'example' => {
+        'source_path'      => 'puppet:///modules/minio/examples',
+        'source_cert_name' => 'example.test',
+        'source_key_name'  => 'example.test',
+      }
+    },
 }
 ```
 
@@ -103,6 +118,10 @@ The following parameters are available in the `minio` class:
 * [`client_binary_name`](#client_binary_name)
 * [`client_aliases`](#client_aliases)
 * [`purge_unmanaged_client_aliases`](#purge_unmanaged_client_aliases)
+* [`cert_ensure`](#cert_ensure)
+* [`cert_directory`](#cert_directory)
+* [`default_cert_configuration`](#default_cert_configuration)
+* [`additional_certs`](#additional_certs)
 
 ##### <a name="package_ensure"></a>`package_ensure`
 
@@ -296,6 +315,34 @@ Data type: `Boolean`
 
 Decides if puppet should purge unmanaged minio client aliases
 
+##### <a name="cert_ensure"></a>`cert_ensure`
+
+Data type: `Enum['present', 'absent']`
+
+Decides if minio certificates binary will be installed.
+
+##### <a name="cert_directory"></a>`cert_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Directory where minio will keep all cerfiticates.
+
+##### <a name="default_cert_configuration"></a>`default_cert_configuration`
+
+Data type: `Optional[Hash]`
+
+Hash with the configuration for the default certificate. See `certs::site`
+of the `broadinstitute/certs` module for parameter descriptions.
+
+##### <a name="additional_certs"></a>`additional_certs`
+
+Data type: `Optional[Hash]`
+
+Hash of the additional certificates to deploy. The key is a directory name, value is
+a hash of certificate configuration. See `certs::site` of the `broadinstitute/certs`
+module for parameter descriptions. **Important**: if you use additional certificates,
+their corresponding SAN names should be filled for SNI to work.
+
 ### <a name="minioclient"></a>`minio::client`
 
 Manages a Minio client (mc) on various Linux/BSD operating systems.
@@ -321,7 +368,7 @@ class { 'minio::client':
         'access_key'          => 'admin',
         'secret_key'          => Sensitive('password'), # can also be a string
         'api_signature'       => 'S3v4', # optional
-        'path_lookup_support' =>'on',    # optional
+        'path_lookup_support' => 'on',   # optional
       }
     },
     purge_unmanaged_aliases    => true
@@ -593,6 +640,20 @@ class { 'minio::server':
     service_template           => 'minio/systemd.erb',
     service_provider           => 'systemd',
     service_ensure             => 'running',
+    cert_ensure                   => 'present',
+    cert_directory                => '/etc/minio/certs',
+    default_cert_configuration    => {
+      'source_path'      => 'puppet:///modules/minio/examples',
+      'source_cert_name' => 'localhost',
+      'source_key_name'  => 'localhost',
+    },
+    additional_certs              => {
+      'example' => {
+        'source_path'      => 'puppet:///modules/minio/examples',
+        'source_cert_name' => 'example.test',
+        'source_key_name'  => 'example.test',
+      }
+    },
 }
 ```
 
@@ -623,6 +684,10 @@ The following parameters are available in the `minio::server` class:
 * [`service_ensure`](#service_ensure)
 * [`service_template`](#service_template)
 * [`service_provider`](#service_provider)
+* [`cert_ensure`](#cert_ensure)
+* [`cert_directory`](#cert_directory)
+* [`default_cert_configuration`](#default_cert_configuration)
+* [`additional_certs`](#additional_certs)
 
 ##### <a name="manage_server_installation"></a>`manage_server_installation`
 
@@ -808,6 +873,135 @@ Which service provider do we use?
 
 Default value: `$minio::service_provider`
 
+##### <a name="cert_ensure"></a>`cert_ensure`
+
+Data type: `Enum['present', 'absent']`
+
+Decides if minio certificates binary will be installed.
+
+Default value: `$minio::cert_ensure`
+
+##### <a name="cert_directory"></a>`cert_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Directory where minio will keep all cerfiticates.
+
+Default value: `$minio::cert_directory`
+
+##### <a name="default_cert_configuration"></a>`default_cert_configuration`
+
+Data type: `Optional[Hash]`
+
+Hash with the configuration for the default certificate. See `certs::site`
+of the `broadinstitute/certs` module for parameter descriptions.
+
+Default value: `$minio::default_cert_configuration`
+
+##### <a name="additional_certs"></a>`additional_certs`
+
+Data type: `Optional[Hash]`
+
+Hash of the additional certificates to deploy. The key is a directory name, value is
+a hash of certificate configuration. See `certs::site` of the `broadinstitute/certs`
+module for parameter descriptions. **Important**: if you use additional certificates,
+their corresponding SAN names should be filled for SNI to work.
+
+Default value: `$minio::additional_certs`
+
+### <a name="minioservercerts"></a>`minio::server::certs`
+
+Manages minio certificate deployment.
+
+#### Examples
+
+##### 
+
+```puppet
+class {'minio::server::certs':
+  cert_ensure                => 'present',
+  owner                      => 'minio',
+  group                      => 'minio',
+  cert_directory             => '/etc/minio/certs',
+  default_cert_configuration => {
+    'source_path'      => 'puppet:///modules/minio/examples',
+    'source_cert_name' => 'localhost',
+    'source_key_name'  => 'localhost',
+  },
+
+  additional_certs           => {
+    'example' => {
+      'source_path'      => 'puppet:///modules/minio/examples',
+      'source_cert_name' => 'example.test',
+      'source_key_name'  => 'example.test',
+    }
+  }
+}
+```
+
+#### Parameters
+
+The following parameters are available in the `minio::server::certs` class:
+
+* [`cert_ensure`](#cert_ensure)
+* [`owner`](#owner)
+* [`group`](#group)
+* [`cert_directory`](#cert_directory)
+* [`default_cert_configuration`](#default_cert_configuration)
+* [`additional_certs`](#additional_certs)
+
+##### <a name="cert_ensure"></a>`cert_ensure`
+
+Data type: `Enum['present', 'absent']`
+
+Decides if minio certificates binary will be installed.
+
+Default value: `$minio::server::cert_ensure`
+
+##### <a name="owner"></a>`owner`
+
+Data type: `String`
+
+The user owning minio cerfificates.
+
+Default value: `$minio::server::owner`
+
+##### <a name="group"></a>`group`
+
+Data type: `String`
+
+The group owning minio certificates.
+
+Default value: `$minio::server::group`
+
+##### <a name="cert_directory"></a>`cert_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Directory where minio will keep all cerfiticates.
+
+Default value: `$minio::server::cert_directory`
+
+##### <a name="default_cert_configuration"></a>`default_cert_configuration`
+
+Data type: `Optional[Hash]`
+
+Hash with the configuration for the default certificate. See `certs::site`
+of the `broadinstitute/certs` module for parameter descriptions.
+
+Default value: `$minio::server::default_cert_configuration`
+
+##### <a name="additional_certs"></a>`additional_certs`
+
+Data type: `Optional[Hash]`
+
+Hash of the additional certificates to deploy. The key is a directory name, value is
+a hash of certificate configuration. See `certs::site` of the `broadinstitute/certs`
+module for parameter descriptions. **Important**: if you use additional certificates,
+their corresponding SAN names should be filled for SNI to work.
+
+Default value: `$minio::server::additional_certs`
+
 ### <a name="minioserverconfig"></a>`minio::server::config`
 
 Copyright
@@ -921,6 +1115,7 @@ class { 'minio::server::install':
     manage_service          => true,
     service_template        => 'minio/systemd.erb',
     service_provider        => 'systemd',
+    cert_directory          => '/etc/minio/certs',
 }
 ```
 
@@ -943,6 +1138,7 @@ The following parameters are available in the `minio::server::install` class:
 * [`manage_service`](#manage_service)
 * [`service_template`](#service_template)
 * [`service_provider`](#service_provider)
+* [`cert_directory`](#cert_directory)
 
 ##### <a name="package_ensure"></a>`package_ensure`
 
@@ -1063,6 +1259,14 @@ Data type: `String`
 Which service provider do we use?
 
 Default value: `$minio::server::service_provider`
+
+##### <a name="cert_directory"></a>`cert_directory`
+
+Data type: `Stdlib::Absolutepath`
+
+Directory where minio will keep all cerfiticates.
+
+Default value: `$minio::server::cert_directory`
 
 ### <a name="minioserverservice"></a>`minio::server::service`
 

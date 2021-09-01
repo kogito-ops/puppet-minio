@@ -33,6 +33,10 @@ describe 'minio::server', type: :class do
           service_template: 'minio/systemd.erb',
           service_provider: 'systemd',
           service_ensure: 'running',
+          cert_ensure: 'present',
+          cert_directory: '/etc/minio/certs',
+          default_cert_configuration: {},
+          additional_certs: {},
         }
       end
 
@@ -42,8 +46,9 @@ describe 'minio::server', type: :class do
           is_expected.to contain_class('minio::server::user')
           is_expected.to contain_class('minio::server::install').that_requires('Class[minio::server::user]')
           is_expected.to contain_class('minio::server::config').that_requires('Class[minio::server::install]')
-          is_expected.to contain_class('minio::server::service').that_requires('Class[minio::server::config]')
-          is_expected.to contain_class('minio::server::service').that_subscribes_to(['Class[minio::server::install]', 'Class[minio::server::config]'])
+          is_expected.to contain_class('minio::server::certs').that_requires('Class[minio::server::config]')
+          is_expected.to contain_class('minio::server::service').that_requires('Class[minio::server::certs]')
+          is_expected.to contain_class('minio::server::service').that_subscribes_to(['Class[minio::server::install]', 'Class[minio::server::config]', 'Class[minio::server::certs]'])
         }
       end
 

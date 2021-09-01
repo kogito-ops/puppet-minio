@@ -21,6 +21,7 @@ with default settings, or customize all settings to your liking.
 - `puppet-minio` depends on
   - [puppetlabs-stdlib][puppetlabs-stdlib],
   - [puppet-archive][puppet-archive],
+  - [puppet-certs][puppet-certs]
 - it manages a user and group `minio`
 - it manages the Minio directory (`/opt/minio`) and the storage (`/var/minio`)
 - it installs a `minio` service listening on port `9000`
@@ -71,6 +72,20 @@ class { 'minio':
     client_checksum               => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
     client_checksum_type          => 'sha256',
     client_installation_directory => '/opt/minioclient',
+    cert_ensure                   => 'present',
+    cert_directory                => '/etc/minio/certs',
+    default_cert_configuration    => {
+        'source_path'      => 'puppet:///modules/minio/examples',
+        'source_cert_name' => 'localhost',
+        'source_key_name'  => 'localhost',
+    },
+    additional_certs              => {
+        'example' => {
+            'source_path'      => 'puppet:///modules/minio/examples',
+            'source_cert_name' => 'example.test',
+            'source_key_name'  => 'example.test',
+        }
+    },
 }
 ```
 
@@ -100,6 +115,20 @@ class { 'minio::server':
     service_template           => 'minio/systemd.erb',
     service_provider           => 'systemd',
     service_ensure             => 'running',
+    cert_ensure                => 'present',
+    cert_directory             => '/etc/minio/certs',
+    default_cert_configuration => {
+        'source_path'      => 'puppet:///modules/minio/examples',
+        'source_cert_name' => 'localhost',
+        'source_key_name'  => 'localhost',
+    },
+    additional_certs           => {
+        'example' => {
+            'source_path'      => 'puppet:///modules/minio/examples',
+            'source_cert_name' => 'example.test',
+            'source_key_name'  => 'example.test',
+        }
+    },
 }
 ```
 
@@ -156,6 +185,7 @@ test cases and syntax checks pass.
 [minio]: https://minio.io
 [puppetlabs-stdlib]: https://github.com/puppetlabs/puppetlabs-stdlib
 [puppet-archive]: https://github.com/voxpupuli/puppet-archive
+[puppet-certs]: https://github.com/broadinstitute/puppet-certs
 [puppet-rspec]: http://rspec-puppet.com/
 
 [build-status]: https://travis-ci.org/kogitoapp/puppet-minio

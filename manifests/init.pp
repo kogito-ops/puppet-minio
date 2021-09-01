@@ -32,6 +32,20 @@
 #       client_checksum               => '0df81285771e12e16a0c4c2f5e0ebc700e66abb8179013cc740d48b0abad49be',
 #       client_checksum_type          => 'sha256',
 #       client_installation_directory => '/opt/minioclient',
+#       cert_ensure                   => 'present',
+#       cert_directory                => '/etc/minio/certs',
+#       default_cert_configuration    => {
+#         'source_path'      => 'puppet:///modules/minio/examples',
+#         'source_cert_name' => 'localhost',
+#         'source_key_name'  => 'localhost',
+#       },
+#       additional_certs              => {
+#         'example' => {
+#           'source_path'      => 'puppet:///modules/minio/examples',
+#           'source_cert_name' => 'example.test',
+#           'source_key_name'  => 'example.test',
+#         }
+#       },
 #   }
 #
 # @param [Enum['present', 'absent']] package_ensure
@@ -98,6 +112,18 @@
 #   List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
 # @param [Boolean] purge_unmanaged_client_aliases
 #   Decides if puppet should purge unmanaged minio client aliases
+# @param [Enum['present', 'absent']] cert_ensure
+#   Decides if minio certificates binary will be installed.
+# @param [Stdlib::Absolutepath] cert_directory
+#   Directory where minio will keep all cerfiticates.
+# @param [Optional[Hash]] default_cert_configuration
+#   Hash with the configuration for the default certificate. See `certs::site`
+#   of the `broadinstitute/certs` module for parameter descriptions.
+# @param [Optional[Hash]] additional_certs
+#   Hash of the additional certificates to deploy. The key is a directory name, value is
+#   a hash of certificate configuration. See `certs::site` of the `broadinstitute/certs`
+#   module for parameter descriptions. **Important**: if you use additional certificates,
+#   their corresponding SAN names should be filled for SNI to work.
 #
 # @author Daniel S. Reichenbach <daniel@kogitoapp.com>
 # @author Evgeny Soynov <esoynov@kogito.network>
@@ -145,6 +171,10 @@ class minio (
   String $client_binary_name,
   Hash $client_aliases,
   Boolean $purge_unmanaged_client_aliases,
+  Enum['present', 'absent'] $cert_ensure,
+  Stdlib::Absolutepath $cert_directory,
+  Optional[Hash] $default_cert_configuration,
+  Optional[Hash] $additional_certs,
   ) {
 
   include ::minio::server

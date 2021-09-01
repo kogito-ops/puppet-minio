@@ -15,7 +15,7 @@ Group=<%= @group %>
 PermissionsStartOnly=true
 
 EnvironmentFile=<%= @configuration_directory %>/config
-ExecStart=<%= @installation_directory %>/minio server --address <%= @listen_ip %>:<%= @listen_port %> <%= @storage_root %>
+ExecStart=<%= @installation_directory %>/minio server --certs-dir <%= @cert_directory %> --address <%= @listen_ip %>:<%= @listen_port %> <%= @storage_root %>
 
 StandardOutput=journal
 StandardError=inherit

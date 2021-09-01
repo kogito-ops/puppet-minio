@@ -19,6 +19,10 @@
     {
       "name": "camptocamp/systemd",
       "version_requirement": ">= 1.1.1 < 3.0.0"
+    },
+    {
+        "name": "broadinstitute/certs",
+        "version_requirement": ">= 2.5.1 < 3"
     }
   ],
   "operatingsystem_support": [

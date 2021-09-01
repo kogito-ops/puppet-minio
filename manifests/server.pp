@@ -25,6 +25,20 @@
 #       service_template           => 'minio/systemd.erb',
 #       service_provider           => 'systemd',
 #       service_ensure             => 'running',
+#       cert_ensure                   => 'present',
+#       cert_directory                => '/etc/minio/certs',
+#       default_cert_configuration    => {
+#         'source_path'      => 'puppet:///modules/minio/examples',
+#         'source_cert_name' => 'localhost',
+#         'source_key_name'  => 'localhost',
+#       },
+#       additional_certs              => {
+#         'example' => {
+#           'source_path'      => 'puppet:///modules/minio/examples',
+#           'source_cert_name' => 'example.test',
+#           'source_key_name'  => 'example.test',
+#         }
+#       },
 #   }
 #
 # @param [Boolean] manage_server_installation
@@ -73,6 +87,18 @@
 #   Path to the server service template file.
 # @param [String] service_provider
 #   Which service provider do we use?
+# @param [Enum['present', 'absent']] cert_ensure
+#   Decides if minio certificates binary will be installed.
+# @param [Stdlib::Absolutepath] cert_directory
+#   Directory where minio will keep all cerfiticates.
+# @param [Optional[Hash]] default_cert_configuration
+#   Hash with the configuration for the default certificate. See `certs::site`
+#   of the `broadinstitute/certs` module for parameter descriptions.
+# @param [Optional[Hash]] additional_certs
+#   Hash of the additional certificates to deploy. The key is a directory name, value is
+#   a hash of certificate configuration. See `certs::site` of the `broadinstitute/certs`
+#   module for parameter descriptions. **Important**: if you use additional certificates,
+#   their corresponding SAN names should be filled for SNI to work.
 #
 # @author Daniel S. Reichenbach <daniel@kogitoapp.com>
 # @author Evgeny Soynov <esoynov@kogito.network>
@@ -109,18 +135,24 @@ class minio::server (
   Stdlib::Ensure::Service $service_ensure = $minio::service_ensure,
   String $service_template = $minio::service_template,
   String $service_provider = $minio::service_provider,
+  Enum['present', 'absent'] $cert_ensure = $minio::cert_ensure,
+  Stdlib::Absolutepath $cert_directory = $minio::cert_directory,
+  Optional[Hash] $default_cert_configuration = $minio::default_cert_configuration,
+  Optional[Hash] $additional_certs = $minio::additional_certs,
 ) {
   if ($manage_server_installation) {
     include ::minio::server::user
     include ::minio::server::install
     include ::minio::server::config
+    include ::minio::server::certs
     include ::minio::server::service
 
     Class['minio::server::user']
     -> Class['minio::server::install']
     -> Class['minio::server::config']
+    -> Class['minio::server::certs']
     -> Class['minio::server::service']
 
-    Class['minio::server::install', 'minio::server::config'] ~> Class['minio::server::service']
+    Class['minio::server::install', 'minio::server::config', 'minio::server::certs'] ~> Class['minio::server::service']
   }
 }

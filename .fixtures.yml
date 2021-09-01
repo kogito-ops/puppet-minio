@@ -10,3 +10,6 @@ fixtures:
     facts: 'https://github.com/puppetlabs/puppetlabs-facts.git'
     puppet_agent: 'https://github.com/puppetlabs/puppetlabs-puppet_agent.git'
     provision: 'https://github.com/puppetlabs/provision.git'
+    certs:
+      repo: 'https://github.com/broadinstitute/puppet-certs.git'
+      ref: '9d45057d0efa9ce2d1fcca2f27127b5e1d23f74a'

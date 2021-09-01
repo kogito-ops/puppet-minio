@@ -18,6 +18,7 @@
 #       manage_service          => true,
 #       service_template        => 'minio/systemd.erb',
 #       service_provider        => 'systemd',
+#       cert_directory          => '/etc/minio/certs',
 #   }
 #
 # @param [Enum['present', 'absent']] package_ensure
@@ -50,6 +51,8 @@
 #   Path to the server service template file.
 # @param [String] service_provider
 #   Which service provider do we use?
+# @param [Stdlib::Absolutepath] cert_directory
+#   Directory where minio will keep all cerfiticates.
 #
 # @author Daniel S. Reichenbach <daniel@kogitoapp.com>
 # @author Evgeny Soynov <esoynov@kogito.network>
@@ -77,6 +80,7 @@ class minio::server::install (
   Boolean $manage_service                             = $minio::server::manage_service,
   String $service_template                            = $minio::server::service_template,
   String $service_provider                            = $minio::server::service_provider,
+  Stdlib::Absolutepath $cert_directory                = $minio::server::cert_directory,
   ) {
 
   file { $storage_root:

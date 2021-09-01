@@ -43,6 +43,7 @@ describe 'minio::server::install', type: :class do
             manage_service: true,
             service_template: 'minio/systemd.erb',
             service_provider: 'systemd',
+            cert_directory: '/etc/minio/certs',
           }
         end
 
