@@ -137,6 +137,7 @@ class minio::server (
   String $service_provider = $minio::service_provider,
   Enum['present', 'absent'] $cert_ensure = $minio::cert_ensure,
   Stdlib::Absolutepath $cert_directory = $minio::cert_directory,
+  String[1] $default_cert_name = $minio::default_cert_name,
   Optional[Hash] $default_cert_configuration = $minio::default_cert_configuration,
   Optional[Hash] $additional_certs = $minio::additional_certs,
 ) {

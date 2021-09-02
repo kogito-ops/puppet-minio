@@ -173,6 +173,7 @@ class minio (
   Boolean $purge_unmanaged_client_aliases,
   Enum['present', 'absent'] $cert_ensure,
   Stdlib::Absolutepath $cert_directory,
+  String[1] $default_cert_name,
   Optional[Hash] $default_cert_configuration,
   Optional[Hash] $additional_certs,
   ) {

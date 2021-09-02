@@ -44,6 +44,7 @@ class minio::server::certs(
   String $owner = $minio::server::owner,
   String $group = $minio::server::group,
   Stdlib::Absolutepath $cert_directory = $minio::server::cert_directory,
+  Optional[String[1]] $default_cert_name = $minio::server::default_cert_name,
   Optional[Hash] $default_cert_configuration = $minio::server::default_cert_configuration,
   Optional[Hash] $additional_certs = $minio::server::additional_certs,
 ) {
@@ -52,8 +53,10 @@ class minio::server::certs(
     default   => 'absent',
   }
 
+  $default_site_name = pick($default_cert_name, 'miniodefault')
+
   if (!empty($default_cert_configuration)) {
-    certs::site { 'default':
+    certs::site { $default_site_name:
       ensure    => $cert_ensure,
       cert_path => $cert_directory,
       key_path  => $cert_directory,
@@ -64,7 +67,7 @@ class minio::server::certs(
 
     -> file {"${cert_directory}/private.key":
       ensure => $link_ensure,
-      target => "${cert_directory}/default.key",
+      target => "${cert_directory}/${default_site_name}.key",
       mode   => '0600',
       owner  => $owner,
       group  => $group,
@@ -72,7 +75,7 @@ class minio::server::certs(
 
     -> file {"${cert_directory}/public.crt":
       ensure => $link_ensure,
-      target => "${cert_directory}/default.pem",
+      target => "${cert_directory}/${default_site_name}.pem",
       mode   => '0600',
       owner  => $owner,
       group  => $group,
