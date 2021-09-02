@@ -81,7 +81,10 @@ class minio::server::install (
   String $service_template                            = $minio::server::service_template,
   String $service_provider                            = $minio::server::service_provider,
   Stdlib::Absolutepath $cert_directory                = $minio::server::cert_directory,
+  Optional[String[1]] $custom_configuration_file_path = $minio::server::custom_configuration_file_path,
   ) {
+
+  $configuration_file_path = pick($custom_configuration_file_path, "${configuration_directory}/config")
 
   file { $storage_root:
     ensure => 'directory',

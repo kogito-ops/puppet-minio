@@ -37,13 +37,17 @@
 # Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 #
 class minio::server::config (
-  Hash[String[1], Variant[String, Integer]]          $configuration           = $minio::server::configuration,
-  String                                             $owner                   = $minio::server::owner,
-  String                                             $group                   = $minio::server::group,
-  Stdlib::Absolutepath                               $configuration_directory = $minio::server::configuration_directory,
-  Stdlib::Absolutepath                               $installation_directory  = $minio::server::installation_directory,
-  Stdlib::Absolutepath                               $storage_root            = $minio::server::storage_root,
+  Hash[String[1], Variant[String, Integer]]          $configuration                  = $minio::server::configuration,
+  String                                             $owner                          = $minio::server::owner,
+  String                                             $group                          = $minio::server::group,
+  Stdlib::Absolutepath                               $configuration_directory        = $minio::server::configuration_directory,
+  Stdlib::Absolutepath                               $installation_directory         = $minio::server::installation_directory,
+  Stdlib::Absolutepath                               $storage_root                   = $minio::server::storage_root,
+  Optional[String[1]]                                $custom_configuration_file_path = $minio::server::custom_configuration_file_path,
   ) {
+
+  $configuration_file_path = pick($custom_configuration_file_path, "${configuration_directory}/config")
+
 
   $default_configuration = {
     'MINIO_ACCESS_KEY'  => 'admin',
@@ -53,7 +57,7 @@ class minio::server::config (
 
   $resulting_configuration = deep_merge($default_configuration, $configuration)
 
-  file { "${configuration_directory}/config":
+  file { $configuration_file_path:
     content => template('minio/config.erb'),
     owner   => $owner,
     group   => $group,

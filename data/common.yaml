@@ -36,3 +36,4 @@ minio::cert_directory: '/etc/minio/certs'
 minio::default_cert_name: 'miniodefault'
 minio::default_cert_configuration: {}
 minio::additional_certs: {}
+minio::custom_configuration_file_path: ~

@@ -140,6 +140,7 @@ class minio::server (
   String[1] $default_cert_name = $minio::default_cert_name,
   Optional[Hash] $default_cert_configuration = $minio::default_cert_configuration,
   Optional[Hash] $additional_certs = $minio::additional_certs,
+  Optional[String[1]] $custom_configuration_file_path = $minio::custom_configuration_file_path,
 ) {
   if ($manage_server_installation) {
     include ::minio::server::user
