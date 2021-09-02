@@ -9,9 +9,9 @@
 #       installation_directory  => '/opt/minio',
 #       storage_root            => '/var/minio',
 #       configuration           => {
-#           'MINIO_ACCESS_KEY'  => 'admin',
-#           'MINIO_SECRET_KEY'  => 'password',
-#           'MINIO_REGION_NAME' => 'us-east-1',
+#           'MINIO_ROOT_USER'     => 'admin',
+#           'MINIO_ROOT_PASSWORD' => 'password',
+#           'MINIO_REGION_NAME'   => 'us-east-1',
 #       },
 #   }
 #
@@ -50,9 +50,9 @@ class minio::server::config (
 
 
   $default_configuration = {
-    'MINIO_ACCESS_KEY'  => 'admin',
-    'MINIO_SECRET_KEY'  => 'password',
-    'MINIO_REGION_NAME' => 'us-east-1',
+    'MINIO_ROOT_USER'     => 'admin',
+    'MINIO_ROOT_PASSWORD' => 'password',
+    'MINIO_REGION_NAME'   => 'us-east-1',
   }
 
   $resulting_configuration = deep_merge($default_configuration, $configuration)
