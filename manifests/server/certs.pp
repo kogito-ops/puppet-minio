@@ -7,6 +7,7 @@
 #     owner                      => 'minio',
 #     group                      => 'minio',
 #     cert_directory             => '/etc/minio/certs',
+#     default_cert_name          => 'miniodefault',
 #     default_cert_configuration => {
 #       'source_path'      => 'puppet:///modules/minio/examples',
 #       'source_cert_name' => 'localhost',
@@ -30,6 +31,9 @@
 #   The group owning minio certificates.
 # @param [Stdlib::Absolutepath] cert_directory
 #   Directory where minio will keep all cerfiticates.
+# @param [Optional[String[1]]] default_cert_name
+#   Name of the default certificate. If no value provided, `miniodefault` is going
+#   to be used.
 # @param [Optional[Hash]] default_cert_configuration
 #   Hash with the configuration for the default certificate. See `certs::site`
 #   of the `broadinstitute/certs` module for parameter descriptions.

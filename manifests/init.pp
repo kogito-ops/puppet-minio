@@ -34,6 +34,7 @@
 #       client_installation_directory => '/opt/minioclient',
 #       cert_ensure                   => 'present',
 #       cert_directory                => '/etc/minio/certs',
+#       default_cert_name             => 'miniodefault',
 #       default_cert_configuration    => {
 #         'source_path'      => 'puppet:///modules/minio/examples',
 #         'source_cert_name' => 'localhost',
@@ -46,6 +47,7 @@
 #           'source_key_name'  => 'example.test',
 #         }
 #       },
+#       custom_configuration_file_path => '/etc/default/minio',
 #   }
 #
 # @param [Enum['present', 'absent']] package_ensure
@@ -116,6 +118,9 @@
 #   Decides if minio certificates binary will be installed.
 # @param [Stdlib::Absolutepath] cert_directory
 #   Directory where minio will keep all cerfiticates.
+# @param [Optional[String[1]]] default_cert_name
+#   Name of the default certificate. If no value provided, `miniodefault` is going
+#   to be used.
 # @param [Optional[Hash]] default_cert_configuration
 #   Hash with the configuration for the default certificate. See `certs::site`
 #   of the `broadinstitute/certs` module for parameter descriptions.
@@ -124,6 +129,8 @@
 #   a hash of certificate configuration. See `certs::site` of the `broadinstitute/certs`
 #   module for parameter descriptions. **Important**: if you use additional certificates,
 #   their corresponding SAN names should be filled for SNI to work.
+# @param [Optional[Stdlib::Absolutepath]] custom_configuration_file_path
+#   Optional custom location of the minio environment file.
 #
 # @author Daniel S. Reichenbach <daniel@kogitoapp.com>
 # @author Evgeny Soynov <esoynov@kogito.network>
@@ -173,7 +180,7 @@ class minio (
   Boolean $purge_unmanaged_client_aliases,
   Enum['present', 'absent'] $cert_ensure,
   Stdlib::Absolutepath $cert_directory,
-  String[1] $default_cert_name,
+  Optional[String[1]] $default_cert_name,
   Optional[Hash] $default_cert_configuration,
   Optional[Hash] $additional_certs,
   Optional[Stdlib::Absolutepath] $custom_configuration_file_path

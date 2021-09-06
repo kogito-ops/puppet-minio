@@ -2,18 +2,19 @@
 #   Applies configuration for `::minio::server` class to system.
 #
 # @example
-#   class { 'minio::server::config':
-#       owner                   => 'minio',
-#       group                   => 'minio',
-#       configuration_directory => '/etc/minio',
-#       installation_directory  => '/opt/minio',
-#       storage_root            => '/var/minio',
-#       configuration           => {
-#           'MINIO_ROOT_USER'     => 'admin',
-#           'MINIO_ROOT_PASSWORD' => 'password',
-#           'MINIO_REGION_NAME'   => 'us-east-1',
-#       },
-#   }
+#  class { 'minio::server::config':
+#      owner                          => 'minio',
+#      group                          => 'minio',
+#      configuration_directory        => '/etc/minio',
+#      installation_directory         => '/opt/minio',
+#      storage_root                   => '/var/minio',
+#      configuration                  => {
+#          'MINIO_ROOT_USER'     => 'admin',
+#          'MINIO_ROOT_PASSWORD' => 'password',
+#          'MINIO_REGION_NAME'   => 'us-east-1',
+#      },
+#      custom_configuration_file_path => '/etc/default/minio',
+#  }
 #
 # @param [String] owner
 #   The user owning minio and its' files.
@@ -27,6 +28,8 @@
 #   Directory where minio will keep all data./minio`
 # @param [Hash[String[1], Variant[String, Integer]]] configuration
 #   Hash with environment settings for Minio.
+# @param [Optional[Stdlib::Absolutepath]] custom_configuration_file_path
+#   Optional custom location of the minio environment file.
 #
 # @author Daniel S. Reichenbach <daniel@kogitoapp.com>
 # @author Evgeny Soynov <esoynov@kogito.network>

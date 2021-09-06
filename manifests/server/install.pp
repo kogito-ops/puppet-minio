@@ -2,24 +2,25 @@
 #   Installs minio server and required service definitions.
 #
 # @example
-#   class { 'minio::server::install':
-#       package_ensure          => 'present',
-#       owner                   => 'minio',
-#       group                   => 'minio',
-#       base_url                => 'https://dl.minio.io/server/minio/release',
-#       version                 => 'RELEASE.2021-08-20T18-32-01Z',
-#       checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
-#       checksum_type           => 'sha256',
-#       configuration_directory => '/etc/minio',
-#       installation_directory  => '/opt/minio',
-#       storage_root            => '/var/minio',
-#       listen_ip               => '127.0.0.1',
-#       listen_port             => 9000,
-#       manage_service          => true,
-#       service_template        => 'minio/systemd.erb',
-#       service_provider        => 'systemd',
-#       cert_directory          => '/etc/minio/certs',
-#   }
+#  class { 'minio::server::install':
+#      package_ensure                 => 'present',
+#      owner                          => 'minio',
+#      group                          => 'minio',
+#      base_url                       => 'https://dl.minio.io/server/minio/release',
+#      version                        => 'RELEASE.2021-08-20T18-32-01Z',
+#      checksum                       => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+#      checksum_type                  => 'sha256',
+#      configuration_directory        => '/etc/minio',
+#      installation_directory         => '/opt/minio',
+#      storage_root                   => '/var/minio',
+#      listen_ip                      => '127.0.0.1',
+#      listen_port                    => 9000,
+#      manage_service                 => true,
+#      service_template               => 'minio/systemd.erb',
+#      service_provider               => 'systemd',
+#      cert_directory                 => '/etc/minio/certs',
+#      custom_configuration_file_path => '/etc/default/minio',
+#  }
 #
 # @param [Enum['present', 'absent']] package_ensure
 #   Decides if the `minio` binary will be installed.
@@ -53,6 +54,8 @@
 #   Which service provider do we use?
 # @param [Stdlib::Absolutepath] cert_directory
 #   Directory where minio will keep all cerfiticates.
+# @param [Optional[Stdlib::Absolutepath]] custom_configuration_file_path
+#   Optional custom location of the minio environment file.
 #
 # @author Daniel S. Reichenbach <daniel@kogitoapp.com>
 # @author Evgeny Soynov <esoynov@kogito.network>

@@ -67,6 +67,7 @@ class { 'minio':
     client_installation_directory => '/opt/minioclient',
     cert_ensure                   => 'present',
     cert_directory                => '/etc/minio/certs',
+    default_cert_name             => 'miniodefault',
     default_cert_configuration    => {
       'source_path'      => 'puppet:///modules/minio/examples',
       'source_cert_name' => 'localhost',
@@ -79,6 +80,7 @@ class { 'minio':
         'source_key_name'  => 'example.test',
       }
     },
+    custom_configuration_file_path => '/etc/default/minio',
 }
 ```
 
@@ -120,8 +122,10 @@ The following parameters are available in the `minio` class:
 * [`purge_unmanaged_client_aliases`](#purge_unmanaged_client_aliases)
 * [`cert_ensure`](#cert_ensure)
 * [`cert_directory`](#cert_directory)
+* [`default_cert_name`](#default_cert_name)
 * [`default_cert_configuration`](#default_cert_configuration)
 * [`additional_certs`](#additional_certs)
+* [`custom_configuration_file_path`](#custom_configuration_file_path)
 
 ##### <a name="package_ensure"></a>`package_ensure`
 
@@ -327,6 +331,13 @@ Data type: `Stdlib::Absolutepath`
 
 Directory where minio will keep all cerfiticates.
 
+##### <a name="default_cert_name"></a>`default_cert_name`
+
+Data type: `Optional[String[1]]`
+
+Name of the default certificate. If no value provided, `miniodefault` is going
+to be used.
+
 ##### <a name="default_cert_configuration"></a>`default_cert_configuration`
 
 Data type: `Optional[Hash]`
@@ -342,6 +353,12 @@ Hash of the additional certificates to deploy. The key is a directory name, valu
 a hash of certificate configuration. See `certs::site` of the `broadinstitute/certs`
 module for parameter descriptions. **Important**: if you use additional certificates,
 their corresponding SAN names should be filled for SNI to work.
+
+##### <a name="custom_configuration_file_path"></a>`custom_configuration_file_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Optional custom location of the minio environment file.
 
 ### <a name="minioclient"></a>`minio::client`
 
@@ -618,42 +635,44 @@ Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 
 ```puppet
 class { 'minio::server':
-    manage_server_installation => true,
-    package_ensure             => 'present',
-    owner                      => 'minio',
-    group                      => 'minio',
-    base_url                   => 'https://dl.minio.io/server/minio/release',
-    version                    => 'RELEASE.2021-08-20T18-32-01Z',
-    checksum                   => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
-    checksum_type              => 'sha256',
-    configuration_directory    => '/etc/minio',
-    installation_directory     => '/opt/minio',
-    storage_root               => '/var/minio',
-    listen_ip                  => '127.0.0.1',
-    listen_port                => 9000,
-    configuration              => {
+    manage_server_installation     => true,
+    package_ensure                 => 'present',
+    owner                          => 'minio',
+    group                          => 'minio',
+    base_url                       => 'https://dl.minio.io/server/minio/release',
+    version                        => 'RELEASE.2021-08-20T18-32-01Z',
+    checksum                       => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+    checksum_type                  => 'sha256',
+    configuration_directory        => '/etc/minio',
+    installation_directory         => '/opt/minio',
+    storage_root                   => '/var/minio',
+    listen_ip                      => '127.0.0.1',
+    listen_port                    => 9000,
+    configuration                  => {
         'MINIO_ACCESS_KEY'  => 'admin',
         'MINIO_SECRET_KEY'  => 'password',
         'MINIO_REGION_NAME' => 'us-east-1',
     },
-    manage_service             => true,
-    service_template           => 'minio/systemd.erb',
-    service_provider           => 'systemd',
-    service_ensure             => 'running',
-    cert_ensure                   => 'present',
-    cert_directory                => '/etc/minio/certs',
-    default_cert_configuration    => {
+    manage_service                 => true,
+    service_template               => 'minio/systemd.erb',
+    service_provider               => 'systemd',
+    service_ensure                 => 'running',
+    cert_ensure                    => 'present',
+    cert_directory                 => '/etc/minio/certs',
+    default_cert_name              => 'miniodefault',
+    default_cert_configuration     => {
       'source_path'      => 'puppet:///modules/minio/examples',
       'source_cert_name' => 'localhost',
       'source_key_name'  => 'localhost',
     },
-    additional_certs              => {
+    additional_certs               => {
       'example' => {
         'source_path'      => 'puppet:///modules/minio/examples',
         'source_cert_name' => 'example.test',
         'source_key_name'  => 'example.test',
       }
     },
+    custom_configuration_file_path => '/etc/default/minio',
 }
 ```
 
@@ -686,8 +705,10 @@ The following parameters are available in the `minio::server` class:
 * [`service_provider`](#service_provider)
 * [`cert_ensure`](#cert_ensure)
 * [`cert_directory`](#cert_directory)
+* [`default_cert_name`](#default_cert_name)
 * [`default_cert_configuration`](#default_cert_configuration)
 * [`additional_certs`](#additional_certs)
+* [`custom_configuration_file_path`](#custom_configuration_file_path)
 
 ##### <a name="manage_server_installation"></a>`manage_server_installation`
 
@@ -889,6 +910,15 @@ Directory where minio will keep all cerfiticates.
 
 Default value: `$minio::cert_directory`
 
+##### <a name="default_cert_name"></a>`default_cert_name`
+
+Data type: `Optional[String[1]]`
+
+Name of the default certificate. If no value provided, `miniodefault` is going
+to be used.
+
+Default value: `$minio::default_cert_name`
+
 ##### <a name="default_cert_configuration"></a>`default_cert_configuration`
 
 Data type: `Optional[Hash]`
@@ -909,6 +939,14 @@ their corresponding SAN names should be filled for SNI to work.
 
 Default value: `$minio::additional_certs`
 
+##### <a name="custom_configuration_file_path"></a>`custom_configuration_file_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Optional custom location of the minio environment file.
+
+Default value: `$minio::custom_configuration_file_path`
+
 ### <a name="minioservercerts"></a>`minio::server::certs`
 
 Manages minio certificate deployment.
@@ -923,6 +961,7 @@ class {'minio::server::certs':
   owner                      => 'minio',
   group                      => 'minio',
   cert_directory             => '/etc/minio/certs',
+  default_cert_name          => 'miniodefault',
   default_cert_configuration => {
     'source_path'      => 'puppet:///modules/minio/examples',
     'source_cert_name' => 'localhost',
@@ -947,6 +986,7 @@ The following parameters are available in the `minio::server::certs` class:
 * [`owner`](#owner)
 * [`group`](#group)
 * [`cert_directory`](#cert_directory)
+* [`default_cert_name`](#default_cert_name)
 * [`default_cert_configuration`](#default_cert_configuration)
 * [`additional_certs`](#additional_certs)
 
@@ -982,6 +1022,15 @@ Directory where minio will keep all cerfiticates.
 
 Default value: `$minio::server::cert_directory`
 
+##### <a name="default_cert_name"></a>`default_cert_name`
+
+Data type: `Optional[String[1]]`
+
+Name of the default certificate. If no value provided, `miniodefault` is going
+to be used.
+
+Default value: `$minio::server::default_cert_name`
+
 ##### <a name="default_cert_configuration"></a>`default_cert_configuration`
 
 Data type: `Optional[Hash]`
@@ -1015,16 +1064,17 @@ Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 
 ```puppet
 class { 'minio::server::config':
-    owner                   => 'minio',
-    group                   => 'minio',
-    configuration_directory => '/etc/minio',
-    installation_directory  => '/opt/minio',
-    storage_root            => '/var/minio',
-    configuration           => {
-        'MINIO_ACCESS_KEY'  => 'admin',
-        'MINIO_SECRET_KEY'  => 'password',
-        'MINIO_REGION_NAME' => 'us-east-1',
+    owner                          => 'minio',
+    group                          => 'minio',
+    configuration_directory        => '/etc/minio',
+    installation_directory         => '/opt/minio',
+    storage_root                   => '/var/minio',
+    configuration                  => {
+        'MINIO_ROOT_USER'     => 'admin',
+        'MINIO_ROOT_PASSWORD' => 'password',
+        'MINIO_REGION_NAME'   => 'us-east-1',
     },
+    custom_configuration_file_path => '/etc/default/minio',
 }
 ```
 
@@ -1038,6 +1088,7 @@ The following parameters are available in the `minio::server::config` class:
 * [`installation_directory`](#installation_directory)
 * [`storage_root`](#storage_root)
 * [`configuration`](#configuration)
+* [`custom_configuration_file_path`](#custom_configuration_file_path)
 
 ##### <a name="owner"></a>`owner`
 
@@ -1087,6 +1138,14 @@ Hash with environment settings for Minio.
 
 Default value: `$minio::server::configuration`
 
+##### <a name="custom_configuration_file_path"></a>`custom_configuration_file_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Optional custom location of the minio environment file.
+
+Default value: `$minio::server::custom_configuration_file_path`
+
 ### <a name="minioserverinstall"></a>`minio::server::install`
 
 Copyright
@@ -1100,22 +1159,23 @@ Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 
 ```puppet
 class { 'minio::server::install':
-    package_ensure          => 'present',
-    owner                   => 'minio',
-    group                   => 'minio',
-    base_url                => 'https://dl.minio.io/server/minio/release',
-    version                 => 'RELEASE.2021-08-20T18-32-01Z',
-    checksum                => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
-    checksum_type           => 'sha256',
-    configuration_directory => '/etc/minio',
-    installation_directory  => '/opt/minio',
-    storage_root            => '/var/minio',
-    listen_ip               => '127.0.0.1',
-    listen_port             => 9000,
-    manage_service          => true,
-    service_template        => 'minio/systemd.erb',
-    service_provider        => 'systemd',
-    cert_directory          => '/etc/minio/certs',
+    package_ensure                 => 'present',
+    owner                          => 'minio',
+    group                          => 'minio',
+    base_url                       => 'https://dl.minio.io/server/minio/release',
+    version                        => 'RELEASE.2021-08-20T18-32-01Z',
+    checksum                       => '0bf72d6fd0a88fee35ac598a1e7a5c90c78b53b6db3988414e34535fb6cf420c',
+    checksum_type                  => 'sha256',
+    configuration_directory        => '/etc/minio',
+    installation_directory         => '/opt/minio',
+    storage_root                   => '/var/minio',
+    listen_ip                      => '127.0.0.1',
+    listen_port                    => 9000,
+    manage_service                 => true,
+    service_template               => 'minio/systemd.erb',
+    service_provider               => 'systemd',
+    cert_directory                 => '/etc/minio/certs',
+    custom_configuration_file_path => '/etc/default/minio',
 }
 ```
 
@@ -1139,6 +1199,7 @@ The following parameters are available in the `minio::server::install` class:
 * [`service_template`](#service_template)
 * [`service_provider`](#service_provider)
 * [`cert_directory`](#cert_directory)
+* [`custom_configuration_file_path`](#custom_configuration_file_path)
 
 ##### <a name="package_ensure"></a>`package_ensure`
 
@@ -1267,6 +1328,14 @@ Data type: `Stdlib::Absolutepath`
 Directory where minio will keep all cerfiticates.
 
 Default value: `$minio::server::cert_directory`
+
+##### <a name="custom_configuration_file_path"></a>`custom_configuration_file_path`
+
+Data type: `Optional[Stdlib::Absolutepath]`
+
+Optional custom location of the minio environment file.
+
+Default value: `$minio::server::custom_configuration_file_path`
 
 ### <a name="minioserverservice"></a>`minio::server::service`
 
