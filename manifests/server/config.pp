@@ -43,7 +43,7 @@ class minio::server::config (
   Stdlib::Absolutepath                               $configuration_directory        = $minio::server::configuration_directory,
   Stdlib::Absolutepath                               $installation_directory         = $minio::server::installation_directory,
   Stdlib::Absolutepath                               $storage_root                   = $minio::server::storage_root,
-  Optional[String[1]]                                $custom_configuration_file_path = $minio::server::custom_configuration_file_path,
+  Optional[Stdlib::Absolutepath]                     $custom_configuration_file_path = $minio::server::custom_configuration_file_path,
   ) {
 
   $configuration_file_path = pick($custom_configuration_file_path, "${configuration_directory}/config")

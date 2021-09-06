@@ -63,25 +63,25 @@
 # Copyright 2017-2021 Daniel S. Reichenbach <https://kogitoapp.com>
 #
 class minio::server::install (
-  Enum['present', 'absent']  $package_ensure          = $minio::server::package_ensure,
-  String $owner                                       = $minio::server::owner,
-  String $group                                       = $minio::server::group,
+  Enum['present', 'absent']  $package_ensure                      = $minio::server::package_ensure,
+  String $owner                                                   = $minio::server::owner,
+  String $group                                                   = $minio::server::group,
 
-  Stdlib::HTTPUrl $base_url                           = $minio::server::base_url,
-  String $version                                     = $minio::server::version,
-  String $checksum                                    = $minio::server::checksum,
-  String $checksum_type                               = $minio::server::checksum_type,
-  Stdlib::Absolutepath $configuration_directory       = $minio::server::configuration_directory,
-  Stdlib::Absolutepath $installation_directory        = $minio::server::installation_directory,
-  Stdlib::Absolutepath $storage_root                  = $minio::server::storage_root,
-  Stdlib::IP::Address $listen_ip                      = $minio::server::listen_ip,
-  Stdlib::Port $listen_port                           = $minio::server::listen_port,
+  Stdlib::HTTPUrl $base_url                                       = $minio::server::base_url,
+  String $version                                                 = $minio::server::version,
+  String $checksum                                                = $minio::server::checksum,
+  String $checksum_type                                           = $minio::server::checksum_type,
+  Stdlib::Absolutepath $configuration_directory                   = $minio::server::configuration_directory,
+  Stdlib::Absolutepath $installation_directory                    = $minio::server::installation_directory,
+  Stdlib::Absolutepath $storage_root                              = $minio::server::storage_root,
+  Stdlib::IP::Address $listen_ip                                  = $minio::server::listen_ip,
+  Stdlib::Port $listen_port                                       = $minio::server::listen_port,
 
-  Boolean $manage_service                             = $minio::server::manage_service,
-  String $service_template                            = $minio::server::service_template,
-  String $service_provider                            = $minio::server::service_provider,
-  Stdlib::Absolutepath $cert_directory                = $minio::server::cert_directory,
-  Optional[String[1]] $custom_configuration_file_path = $minio::server::custom_configuration_file_path,
+  Boolean $manage_service                                         = $minio::server::manage_service,
+  String $service_template                                        = $minio::server::service_template,
+  String $service_provider                                        = $minio::server::service_provider,
+  Stdlib::Absolutepath $cert_directory                            = $minio::server::cert_directory,
+  Optional[Stdlib::Absolutepath] $custom_configuration_file_path  = $minio::server::custom_configuration_file_path,
   ) {
 
   $configuration_file_path = pick($custom_configuration_file_path, "${configuration_directory}/config")

@@ -176,7 +176,7 @@ class minio (
   String[1] $default_cert_name,
   Optional[Hash] $default_cert_configuration,
   Optional[Hash] $additional_certs,
-  Optional[String[1]] $custom_configuration_file_path
+  Optional[Stdlib::Absolutepath] $custom_configuration_file_path
   ) {
 
   include ::minio::server

@@ -12,6 +12,7 @@ describe 'minio::server::certs' do
           owner: 'minio',
           group: 'minio',
           cert_directory: '/etc/minio/certs',
+          default_cert_name: 'miniodefault',
           default_cert_configuration: {},
           additional_certs: {},
         }
@@ -24,7 +25,7 @@ describe 'minio::server::certs' do
 
       it {
         is_expected.to compile
-        is_expected.not_to contain_certs__site('default')
+        is_expected.not_to contain_certs__site('miniodefault')
         is_expected.not_to contain_file('/etc/minio/certs/private.key')
         is_expected.not_to contain_file('/etc/minio/certs/public.crt')
       }
@@ -40,12 +41,12 @@ describe 'minio::server::certs' do
 
         it {
           is_expected.to compile
-          is_expected.to contain_certs__site('default')
+          is_expected.to contain_certs__site('miniodefault')
           is_expected.to contain_file('/etc/minio/certs/private.key')
-            .with(ensure: 'link', target: '/etc/minio/certs/default.key')
-            .that_requires('Certs::Site[default]')
+            .with(ensure: 'link', target: '/etc/minio/certs/miniodefault.key')
+            .that_requires('Certs::Site[miniodefault]')
           is_expected.to contain_file('/etc/minio/certs/public.crt')
-            .with(ensure: 'link', target: '/etc/minio/certs/default.pem')
+            .with(ensure: 'link', target: '/etc/minio/certs/miniodefault.pem')
             .that_requires('File[/etc/minio/certs/private.key]')
         }
       end

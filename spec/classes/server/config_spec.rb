@@ -24,10 +24,11 @@ describe 'minio::server::config' do
             configuration_directory: '/etc/minio',
             installation_directory: '/opt/minio',
             storage_root: '/var/minio',
+            custom_configuration_file_path: '/etc/default/minio',
           }
         end
 
-        it { is_expected.to contain_file('/etc/minio/config') }
+        it { is_expected.to contain_file('/etc/default/minio') }
       end
     end
   end

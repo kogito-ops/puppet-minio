@@ -35,8 +35,10 @@ describe 'minio::server', type: :class do
           service_ensure: 'running',
           cert_ensure: 'present',
           cert_directory: '/etc/minio/certs',
+          default_cert_name: 'miniodefault',
           default_cert_configuration: {},
           additional_certs: {},
+          custom_configuration_file_path: '/etc/default/minio',
         }
       end
 
