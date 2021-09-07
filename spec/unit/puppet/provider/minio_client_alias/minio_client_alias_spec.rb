@@ -57,6 +57,21 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
     end
   end
 
+  it 'processes legacy paths' do
+    Puppet::Util::ExecutionStub.set do |_command, _options|
+      <<-JSONSTRINGS
+      {"status":"success","alias":"test1","URL":"http://example.com","accessKey":"admin","secretKey":"password","api":"S3v4","path":""}
+      {"status":"success","alias":"test2","URL":"http://example.com","accessKey":"access","secretKey":"secret","api":"S3v2","path":"dns"}
+      {"status":"success","alias":"test3","URL":"http://example.com","accessKey":"access","secretKey":"secret","api":"S3v2","path":"path"}
+      JSONSTRINGS
+    end
+
+    alisases = provider.get(context)
+    expect(alisases).to include(a_hash_including(name: 'test1', path_lookup_support: 'auto'))
+    expect(alisases).to include(a_hash_including(name: 'test2', path_lookup_support: 'off'))
+    expect(alisases).to include(a_hash_including(name: 'test3', path_lookup_support: 'on'))
+  end
+
   describe 'create(context, name, should)' do
     it 'creates the resource' do
       Puppet::Util::ExecutionStub.set do |command, _options|
@@ -142,7 +157,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
     end
   end
 
-  describe 'insync?(context, name, property_name, is_hash, should_hash)' do
+  describe 'insync?(context, name, property_name, is_hash, should_hash)' do # rubocop:disable RSpec/EmptyExampleGroup
     def self.test_insync_of_secret_key(desc, is, should, expected)
       it desc do
         is_hash = { secret_key: is }

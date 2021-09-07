@@ -6,7 +6,7 @@ require 'puppet_x/minio/client'
 
 RSpec.describe PuppetX::Minio::Client do
   before :each do
-    described_class.class_variable_set(:@@client_ensured, false)
+    described_class.instance_variable_set(:@client_ensured, false)
   end
 
   describe 'execute' do

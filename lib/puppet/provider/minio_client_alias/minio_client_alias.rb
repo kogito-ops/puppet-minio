@@ -4,11 +4,11 @@ require 'json'
 require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
 
-legacy_path_support_map = {
+LEGACY_PATH_SUPPORT_MAP = {
   '': 'auto',
   dns: 'off',
   path: 'on',
-}
+}.freeze
 
 # Implementation for the minio_client_alias type using the Resource API.
 class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi::SimpleProvider
@@ -46,7 +46,7 @@ class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi
     when :secret_key
       is = unwrap_maybe_sensitive(is_hash[property_name])
       should = unwrap_maybe_sensitive(should_hash[property_name])
-      return is == should
+      is == should
     end
   end
 
@@ -65,8 +65,9 @@ class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi
 
   def to_puppet_alias(json)
     path_lookup_support = json['path']
-    if legacy_path_support_map.key?(json['path'])
-      path_lookup_support = legacy_path_support_map[json['path']]
+
+    if LEGACY_PATH_SUPPORT_MAP.key?(json['path'].to_sym)
+      path_lookup_support = LEGACY_PATH_SUPPORT_MAP[json['path'].to_sym]
     end
 
     {

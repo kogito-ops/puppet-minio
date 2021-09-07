@@ -5,9 +5,9 @@ require 'json'
 module PuppetX # rubocop:disable Style/ClassAndModuleChildren
   module Minio # rubocop:disable Style/ClassAndModuleChildren
     class Client # rubocop:disable Style/Documentation
-      CLIENT_LOCATION = '/root/.minioclient'.freeze
+      CLIENT_LOCATION = '/root/.minioclient'
 
-      class_variable_set(:@@client_ensured, false)
+      @client_ensured = false
 
       def self.execute(args, **execute_args)
         ensure_client_installed
@@ -20,7 +20,7 @@ module PuppetX # rubocop:disable Style/ClassAndModuleChildren
       end
 
       def self.ensure_client_installed
-        return if class_variable_get(:@@client_ensured)
+        return if @client_ensured
 
         unless installed?
           errormsg = [
@@ -30,7 +30,7 @@ module PuppetX # rubocop:disable Style/ClassAndModuleChildren
           raise Puppet::ExecutionFailure, errormsg.join
         end
 
-        class_variable_set(:@@client_ensured, true)
+        @client_ensured = true
       end
 
       def self.installed?
