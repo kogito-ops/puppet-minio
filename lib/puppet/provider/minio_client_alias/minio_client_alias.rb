@@ -4,6 +4,12 @@ require 'json'
 require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
 
+legacy_path_support_map = {
+  '': 'auto',
+  dns: 'off',
+  path: 'on',
+}
+
 # Implementation for the minio_client_alias type using the Resource API.
 class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi::SimpleProvider
   def get(context)
@@ -58,6 +64,11 @@ class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi
   end
 
   def to_puppet_alias(json)
+    path_lookup_support = json['path']
+    if legacy_path_support_map.key?(json['path'])
+      path_lookup_support = legacy_path_support_map[json['path']]
+    end
+
     {
       name: json['alias'],
       ensure: 'present',
@@ -65,7 +76,7 @@ class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi
       access_key: json['accessKey'],
       secret_key: Puppet::Pops::Types::PSensitiveType::Sensitive.new(json['secretKey']),
       api_signature: json['api'],
-      path_lookup_support: json['path'],
+      path_lookup_support: path_lookup_support,
     }
   end
 
