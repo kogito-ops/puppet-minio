@@ -14,6 +14,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
     allow(context).to receive(:debug)
     allow(context).to receive(:notice)
     allow(File).to receive(:exist?).and_return(true)
+    allow(File).to receive(:readlink).and_return('/usr/local/sbin/minio-client')
     Puppet::Util::ExecutionStub.set do |_command, _options|
       ''
     end
@@ -75,7 +76,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
   describe 'create(context, name, should)' do
     it 'creates the resource' do
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias set test http://example.com access secret --api S3v4 --path on'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias set test http://example.com access secret --api S3v4 --path on'
 
         ''
       end
@@ -93,7 +94,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
 
     it 'does not add api signature when not provided in puppet resource' do
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias set test http://example.com access secret --path on'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias set test http://example.com access secret --path on'
 
         ''
       end
@@ -109,7 +110,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
 
     it 'does not add path when not provided in puppet resource' do
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias set test http://example.com access secret --api S3v4'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias set test http://example.com access secret --api S3v4'
 
         ''
       end
@@ -129,7 +130,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
       expect(context).to receive(:notice).with(%r{\AUpdating 'foo'})
 
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias set foo http://example.com access secret'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias set foo http://example.com access secret'
 
         ''
       end
@@ -148,7 +149,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
       expect(context).to receive(:notice).with(%r{\ADeleting 'foo'})
 
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias remove foo'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias remove foo'
 
         ''
       end

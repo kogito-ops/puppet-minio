@@ -4,14 +4,14 @@ require 'json'
 require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
 
+LEGACY_PATH_SUPPORT_MAP ||= {
+  '': 'auto',
+  dns: 'off',
+  path: 'on',
+}.freeze
+
 # Implementation for the minio_client_alias type using the Resource API.
 class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi::SimpleProvider
-  LEGACY_PATH_SUPPORT_MAP = {
-    '': 'auto',
-    dns: 'off',
-    path: 'on',
-  }.freeze
-
   def get(context)
     context.debug('Returning list of minio client aliases')
     return [] unless PuppetX::Minio::Client.installed?

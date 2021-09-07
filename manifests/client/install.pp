@@ -74,6 +74,5 @@ class minio::client::install(
   -> file { '/root/.minioclient':
     ensure => $link_ensure,
     target => $target,
-    mode   => '0744'
   }
 }

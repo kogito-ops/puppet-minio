@@ -5,13 +5,13 @@ require 'json'
 module PuppetX # rubocop:disable Style/ClassAndModuleChildren
   module Minio # rubocop:disable Style/ClassAndModuleChildren
     class Client # rubocop:disable Style/Documentation
-      CLIENT_LOCATION = '/root/.minioclient'
+      CLIENT_LINK_LOCATION = '/root/.minioclient'
 
-      @client_ensured = false
+      @client_location = nil
 
       def self.execute(args, **execute_args)
         ensure_client_installed
-        cmd = "#{CLIENT_LOCATION} --json #{args}"
+        cmd = "#{@client_location} --json #{args}"
         out = Puppet::Util::Execution.execute(cmd, failonfail: true, **execute_args)
 
         out.each_line.map do |line|
@@ -20,21 +20,21 @@ module PuppetX # rubocop:disable Style/ClassAndModuleChildren
       end
 
       def self.ensure_client_installed
-        return if @client_ensured
+        return if @client_location
 
         unless installed?
           errormsg = [
-            "Symlink to minio client does not exist at #{CLIENT_LOCATION}. ",
+            "Symlink to minio client does not exist at #{CLIENT_LINK_LOCATION}. ",
             'Make sure you installed the client before managing minio resources.',
           ]
           raise Puppet::ExecutionFailure, errormsg.join
         end
 
-        @client_ensured = true
+        @client_location = File.readlink(CLIENT_LINK_LOCATION)
       end
 
       def self.installed?
-        File.exist?(CLIENT_LOCATION)
+        File.exist?(CLIENT_LINK_LOCATION)
       end
     end
   end
