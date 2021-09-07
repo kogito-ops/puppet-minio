@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'minio::service', type: :class do
+describe 'minio::server::service', type: :class do
   on_supported_os.each do |os, facts|
     context "on #{os} " do
       let :facts do
@@ -14,6 +14,7 @@ describe 'minio::service', type: :class do
           {
             manage_service: true,
             service_provider: 'systemd',
+            service_ensure: 'running',
           }
         end
 

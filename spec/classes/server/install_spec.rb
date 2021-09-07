@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'minio::install', type: :class do
+describe 'minio::server::install', type: :class do
   on_supported_os.each do |os, facts|
     context "on #{os} " do
       let :facts do
@@ -10,17 +10,19 @@ describe 'minio::install', type: :class do
       end
 
       let(:pre_condition) do
-        "class { 'minio::config':
+        "class { 'minio::server::config':
           configuration => {},
           owner => 'minio',
           group => 'minio',
           configuration_directory => '/etc/minio',
           installation_directory => '/opt/minio',
           storage_root => '/var/minio',
+          custom_configuration_file_path => '/etc/default/minio',
         }
-        class { 'minio::service':
+        class { 'minio::server::service':
           manage_service => true,
           service_provider => 'systemd',
+          service_ensure => 'running',
         }"
       end
 
@@ -42,6 +44,8 @@ describe 'minio::install', type: :class do
             manage_service: true,
             service_template: 'minio/systemd.erb',
             service_provider: 'systemd',
+            cert_directory: '/etc/minio/certs',
+            custom_configuration_file_path: '/etc/default/minio',
           }
         end
 
