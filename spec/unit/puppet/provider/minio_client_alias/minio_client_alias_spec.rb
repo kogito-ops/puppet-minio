@@ -14,6 +14,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
     allow(context).to receive(:debug)
     allow(context).to receive(:notice)
     allow(File).to receive(:exist?).and_return(true)
+    allow(File).to receive(:readlink).and_return('/usr/local/sbin/minio-client')
     Puppet::Util::ExecutionStub.set do |_command, _options|
       ''
     end
@@ -57,10 +58,25 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
     end
   end
 
+  it 'processes legacy paths' do
+    Puppet::Util::ExecutionStub.set do |_command, _options|
+      <<-JSONSTRINGS
+      {"status":"success","alias":"test1","URL":"http://example.com","accessKey":"admin","secretKey":"password","api":"S3v4","path":""}
+      {"status":"success","alias":"test2","URL":"http://example.com","accessKey":"access","secretKey":"secret","api":"S3v2","path":"dns"}
+      {"status":"success","alias":"test3","URL":"http://example.com","accessKey":"access","secretKey":"secret","api":"S3v2","path":"path"}
+      JSONSTRINGS
+    end
+
+    alisases = provider.get(context)
+    expect(alisases).to include(a_hash_including(name: 'test1', path_lookup_support: 'auto'))
+    expect(alisases).to include(a_hash_including(name: 'test2', path_lookup_support: 'off'))
+    expect(alisases).to include(a_hash_including(name: 'test3', path_lookup_support: 'on'))
+  end
+
   describe 'create(context, name, should)' do
     it 'creates the resource' do
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias set test http://example.com access secret --api S3v4 --path on'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias set test http://example.com access secret --api S3v4 --path on'
 
         ''
       end
@@ -78,7 +94,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
 
     it 'does not add api signature when not provided in puppet resource' do
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias set test http://example.com access secret --path on'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias set test http://example.com access secret --path on'
 
         ''
       end
@@ -94,7 +110,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
 
     it 'does not add path when not provided in puppet resource' do
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias set test http://example.com access secret --api S3v4'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias set test http://example.com access secret --api S3v4'
 
         ''
       end
@@ -114,7 +130,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
       expect(context).to receive(:notice).with(%r{\AUpdating 'foo'})
 
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias set foo http://example.com access secret'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias set foo http://example.com access secret'
 
         ''
       end
@@ -133,7 +149,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
       expect(context).to receive(:notice).with(%r{\ADeleting 'foo'})
 
       Puppet::Util::ExecutionStub.set do |command, _options|
-        expect(command).to eq '/root/.minioclient --json alias remove foo'
+        expect(command).to eq '/usr/local/sbin/minio-client --json alias remove foo'
 
         ''
       end
@@ -142,7 +158,7 @@ RSpec.describe Puppet::Provider::MinioClientAlias::MinioClientAlias do
     end
   end
 
-  describe 'insync?(context, name, property_name, is_hash, should_hash)' do
+  describe 'insync?(context, name, property_name, is_hash, should_hash)' do # rubocop:disable RSpec/EmptyExampleGroup
     def self.test_insync_of_secret_key(desc, is, should, expected)
       it desc do
         is_hash = { secret_key: is }

@@ -4,6 +4,12 @@ require 'json'
 require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
 
+LEGACY_PATH_SUPPORT_MAP ||= {
+  '': 'auto',
+  dns: 'off',
+  path: 'on',
+}.freeze
+
 # Implementation for the minio_client_alias type using the Resource API.
 class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi::SimpleProvider
   def get(context)
@@ -40,7 +46,7 @@ class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi
     when :secret_key
       is = unwrap_maybe_sensitive(is_hash[property_name])
       should = unwrap_maybe_sensitive(should_hash[property_name])
-      return is == should
+      is == should
     end
   end
 
@@ -58,14 +64,20 @@ class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi
   end
 
   def to_puppet_alias(json)
+    path_lookup_support = json['path']
+
+    if LEGACY_PATH_SUPPORT_MAP.key?(json['path'].to_sym)
+      path_lookup_support = LEGACY_PATH_SUPPORT_MAP[json['path'].to_sym]
+    end
+
     {
       name: json['alias'],
       ensure: 'present',
       endpoint: json['URL'],
       access_key: json['accessKey'],
-      secret_key: Puppet::Pops::Types::PSensitiveType::Sensitive.new(json['secretKey']),
+      secret_key: Puppet::Pops::Types::PSensitiveType::Sensitive.new(json['secretKey'] || ''),
       api_signature: json['api'],
-      path_lookup_support: json['path'],
+      path_lookup_support: path_lookup_support,
     }
   end
 

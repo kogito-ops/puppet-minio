@@ -162,6 +162,9 @@ class { 'minio::client':
 
 See [metadata.json](metadata.json) for supported platforms.
 
+* It's currently not possible to purge unmanaged client aliases in the same run
+  when the client is being installed.
+
 ## Development
 
 ### Running tests

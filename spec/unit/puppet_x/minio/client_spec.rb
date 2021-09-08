@@ -6,7 +6,7 @@ require 'puppet_x/minio/client'
 
 RSpec.describe PuppetX::Minio::Client do
   before :each do
-    described_class.class_variable_set(:@@client_ensured, false)
+    described_class.instance_variable_set(:@client_location, nil)
   end
 
   describe 'execute' do
@@ -22,13 +22,14 @@ RSpec.describe PuppetX::Minio::Client do
     context 'with client installed' do
       before :each do
         allow(File).to receive(:exist?).and_return(true)
+        allow(File).to receive(:readlink).and_return('/usr/local/sbin/minio-client')
         Puppet::Util::ExecutionStub.set do |command, _options|
           out = <<-JSONSTRINGS
           {"status":"success","alias":"test1"}
           {"status":"success","alias":"test2"}
           JSONSTRINGS
 
-          out if command == '/root/.minioclient --json alias list'
+          out if command == '/usr/local/sbin/minio-client --json alias list'
         end
       end
 

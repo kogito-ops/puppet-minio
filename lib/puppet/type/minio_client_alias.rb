@@ -25,7 +25,7 @@ Puppet::ResourceApi.register_type(
   }
 
 **Autorequires**:
-* `Class[minio::client]`
+* `File[/root/.minioclient]`
 EOS
   features: ['custom_insync'],
   attributes: {
@@ -44,15 +44,15 @@ EOS
       desc:      'The API endpoint url',
     },
     access_key: {
-      type:      'String[1]',
+      type:      'Optional[String]',
       desc:      'The API access key',
     },
     secret_key: {
-      type:      'Variant[Sensitive[String[1]], String[1]]',
+      type:      'Optional[Variant[Sensitive[String], String]]',
       desc:      'The API access secret',
     },
     api_signature: {
-      type:      'Optional[String[1]]',
+      type:      "Optional[Enum['S3v4', 'S3v2']]",
       desc:      'The API signature',
     },
     path_lookup_support: {
@@ -61,6 +61,6 @@ EOS
     },
   },
   autorequire: {
-    class: 'minio::client::install',
+    file: '/root/.minioclient',
   },
 )

@@ -1474,7 +1474,7 @@ Default value: `$minio::server::home`
 ### <a name="minio_client_alias"></a>`minio_client_alias`
 
 **Autorequires**:
-* `Class[minio::client]`
+* `File[/root/.minioclient]`
 
 #### Examples
 
@@ -1508,13 +1508,13 @@ The following properties are available in the `minio_client_alias` type.
 
 ##### `access_key`
 
-Data type: `String[1]`
+Data type: `Optional[String]`
 
 The API access key
 
 ##### `api_signature`
 
-Data type: `Optional[String[1]]`
+Data type: `Optional[Enum['S3v4', 'S3v2']]`
 
 The API signature
 
@@ -1540,7 +1540,7 @@ Indicate whether dns or path style url requests are supported by the server.
 
 ##### `secret_key`
 
-Data type: `Variant[Sensitive[String[1]], String[1]]`
+Data type: `Optional[Variant[Sensitive[String], String]]`
 
 The API access secret
 

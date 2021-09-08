@@ -30,7 +30,7 @@ minio::client_checksum_type: 'sha256'
 minio::client_installation_directory: '/usr/local/bin'
 minio::client_binary_name: 'minio-client'
 minio::client_aliases: {}
-minio::purge_unmanaged_client_aliases: true
+minio::purge_unmanaged_client_aliases: false
 minio::cert_ensure: 'present'
 minio::cert_directory: '/etc/minio/certs'
 minio::default_cert_name: 'miniodefault'
