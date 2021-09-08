@@ -25,7 +25,7 @@ group :development do
   gem "puppet-module-win-default-r#{minor_version}", '~> 1.0',   require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "puppet-module-win-dev-r#{minor_version}", '~> 1.0',       require: false, platforms: [:mswin, :mingw, :x64_mingw]
   gem "puppet-resource_api",                                     require: false
-  gem 'puppet_litmus', git: 'https://github.com/puppetlabs/puppet_litmus.git', ref: 'main'
+  gem 'puppet_litmus', git: 'https://github.com/ZloeSabo/puppet_litmus.git', ref: 'feature/remove-rhel-support'
 end
 group :system_tests do
   gem "puppet-module-posix-system-r#{minor_version}", '~> 1.0', require: false, platforms: [:ruby]
