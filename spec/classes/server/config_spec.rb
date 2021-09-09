@@ -40,7 +40,7 @@ describe 'minio::server::config' do
         end
 
         it {
-          is_expected.to compile.and_raise_error(/Please provide a value for the MINIO_DEPLOYMENT_DEFINITION in configuration to run distributed or erasure-coded deployment./)
+          is_expected.to compile.and_raise_error(%r{Please provide a value for the MINIO_DEPLOYMENT_DEFINITION in configuration to run distributed or erasure-coded deployment.})
         }
       end
 
@@ -50,7 +50,7 @@ describe 'minio::server::config' do
             storage_root: ['/var/minio1', '/var/minio2', '/var/minio3', '/var/minio4'],
             configuration: {
               MINIO_DEPLOYMENT_DEFINITION: '/var/minio{1...4}',
-            }
+            },
           )
         end
 
