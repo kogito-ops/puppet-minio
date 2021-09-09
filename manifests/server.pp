@@ -13,7 +13,7 @@
 #      checksum_type                  => 'sha256',
 #      configuration_directory        => '/etc/minio',
 #      installation_directory         => '/opt/minio',
-#      storage_root                   => '/var/minio',
+#      storage_root                   => '/var/minio', # Could also be an array
 #      listen_ip                      => '127.0.0.1',
 #      listen_port                    => 9000,
 #      configuration                  => {
@@ -73,8 +73,8 @@
 #   Directory holding Minio configuration file. Default: `/etc/minio`
 # @param [Stdlib::Absolutepath] installation_directory
 #   Target directory to hold the minio installation. Default: `/opt/minio`
-# @param [Stdlib::Absolutepath] storage_root
-#   Directory where minio will keep all data. Default: `/var/minio`
+# @param [Variant[Stdlib::Absolutepath, Array[Stdlib::Absolutepath]]] storage_root
+#   Directory or directories where minio will keep all data. Default: `/var/minio`
 # @param [Stdlib::IP::Address] listen_ip
 #   IP address on which Minio should listen to requests.
 # @param [Stdlib::Port] listen_port
@@ -132,7 +132,7 @@ class minio::server (
   String $checksum_type = $minio::checksum_type,
   Stdlib::Absolutepath $configuration_directory = $minio::configuration_directory,
   Stdlib::Absolutepath $installation_directory = $minio::installation_directory,
-  Stdlib::Absolutepath $storage_root = $minio::storage_root,
+  Variant[Stdlib::Absolutepath, Array[Stdlib::Absolutepath]] $storage_root = $minio::storage_root,
   Stdlib::IP::Address $listen_ip = $minio::listen_ip,
   Stdlib::Port $listen_port = $minio::listen_port,
 

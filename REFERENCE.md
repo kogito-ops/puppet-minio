@@ -207,9 +207,9 @@ Target directory to hold the minio installation. Default: `/opt/minio`
 
 ##### <a name="storage_root"></a>`storage_root`
 
-Data type: `Stdlib::Absolutepath`
+Data type: `Variant[Stdlib::Absolutepath, Array[Stdlib::Absolutepath]]`
 
-Directory where minio will keep all data. Default: `/var/minio`
+Directory or directories where minio will keep all data. Default: `/var/minio`
 
 ##### <a name="listen_ip"></a>`listen_ip`
 
@@ -645,7 +645,7 @@ class { 'minio::server':
     checksum_type                  => 'sha256',
     configuration_directory        => '/etc/minio',
     installation_directory         => '/opt/minio',
-    storage_root                   => '/var/minio',
+    storage_root                   => '/var/minio', # Could also be an array
     listen_ip                      => '127.0.0.1',
     listen_port                    => 9000,
     configuration                  => {
@@ -832,9 +832,9 @@ Default value: `$minio::installation_directory`
 
 ##### <a name="storage_root"></a>`storage_root`
 
-Data type: `Stdlib::Absolutepath`
+Data type: `Variant[Stdlib::Absolutepath, Array[Stdlib::Absolutepath]]`
 
-Directory where minio will keep all data. Default: `/var/minio`
+Directory or directories where minio will keep all data. Default: `/var/minio`
 
 Default value: `$minio::storage_root`
 
@@ -1124,9 +1124,9 @@ Default value: `$minio::server::installation_directory`
 
 ##### <a name="storage_root"></a>`storage_root`
 
-Data type: `Stdlib::Absolutepath`
+Data type: `Variant[Stdlib::Absolutepath, Array[Stdlib::Absolutepath]]`
 
-Directory where minio will keep all data./minio`
+Directory or directories where minio will keep all data.
 
 Default value: `$minio::server::storage_root`
 
@@ -1275,9 +1275,9 @@ Default value: `$minio::server::installation_directory`
 
 ##### <a name="storage_root"></a>`storage_root`
 
-Data type: `Stdlib::Absolutepath`
+Data type: `Variant[Stdlib::Absolutepath, Array[Stdlib::Absolutepath]]`
 
-Directory where minio will keep all data./minio`
+Directory or directories where minio will keep all data.
 
 Default value: `$minio::server::storage_root`
 

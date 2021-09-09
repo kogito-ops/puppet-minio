@@ -44,6 +44,11 @@ PUPPETCODE
     it { is_expected.to be_running.under('systemd') }
   end
 
+  describe process('minio') do
+    its(:user) { should eq 'minio' }
+    its(:args) { should match 'server --certs-dir /etc/minio/certs --address 127.0.0.1:9000 /var/minio' }
+  end
+
   describe port(9000) do
     it { is_expected.to be_listening }
   end
@@ -64,5 +69,79 @@ PUPPETCODE
       is_expected.to be_owned_by 'root'
       is_expected.to be_grouped_into 'root'
     }
+  end
+end
+
+describe 'with multiple storage roots', if: ['debian', 'redhat', 'ubuntu'].include?(os[:family]) do
+  pp = <<-PUPPETCODE
+  class { 'minio':
+    storage_root  => [
+      '/var/minio1',
+      '/var/minio2',
+      '/var/minio3',
+      '/var/minio4',
+    ],
+    configuration => {
+      'MINIO_DEPLOYMENT_DEFINITION' => '/var/minio{1...4}',
+    },
+  }
+PUPPETCODE
+
+  it 'applies idempotently' do
+    idempotent_apply(pp)
+  end
+
+  describe file('/var/minio1') do
+    it { is_expected.to be_directory }
+  end
+
+  describe file('/var/minio2') do
+    it { is_expected.to be_directory }
+  end
+
+  describe file('/var/minio3') do
+    it { is_expected.to be_directory }
+  end
+
+  describe file('/var/minio4') do
+    it { is_expected.to be_directory }
+  end
+
+  describe service('minio') do
+    it {
+      is_expected.to be_enabled
+      is_expected.to be_running.under('systemd')
+    }
+  end
+
+  describe process('minio') do
+    its(:user) { should eq 'minio' }
+    its(:args) { should match 'server --certs-dir /etc/minio/certs --address 127.0.0.1:9000 /var/minio{1...4}' }
+  end
+end
+
+describe 'with extra commandline options', if: ['debian', 'redhat', 'ubuntu'].include?(os[:family]) do
+  pp = <<-PUPPETCODE
+  class { 'minio':
+    configuration => {
+      'MINIO_OPTS' => '"--quiet --anonymous"',
+    },
+  }
+PUPPETCODE
+
+  it 'applies idempotently' do
+    idempotent_apply(pp)
+  end
+
+  describe service('minio') do
+    it {
+      is_expected.to be_enabled
+      is_expected.to be_running.under('systemd')
+    }
+  end
+
+  describe process('minio') do
+    its(:user) { should eq 'minio' }
+    its(:args) { should match 'server --quiet --anonymous --certs-dir /etc/minio/certs --address 127.0.0.1:9000 /var/minio' }
   end
 end
