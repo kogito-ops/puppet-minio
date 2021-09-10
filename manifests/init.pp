@@ -76,8 +76,8 @@
 #   Directory holding Minio configuration file. Default: `/etc/minio`
 # @param [Stdlib::Absolutepath] installation_directory
 #   Target directory to hold the minio installation. Default: `/opt/minio`
-# @param [Stdlib::Absolutepath] storage_root
-#   Directory where minio will keep all data. Default: `/var/minio`
+# @param [Variant[Stdlib::Absolutepath, Array[Stdlib::Absolutepath]]] storage_root
+#   Directory or directories where minio will keep all data. Default: `/var/minio`
 # @param [Stdlib::IP::Address] listen_ip
 #   IP address on which Minio should listen to requests.
 # @param [Stdlib::Port] listen_port
@@ -156,7 +156,7 @@ class minio (
   String $checksum_type,
   Stdlib::Absolutepath $configuration_directory,
   Stdlib::Absolutepath $installation_directory,
-  Stdlib::Absolutepath $storage_root,
+  Variant[Stdlib::Absolutepath, Array[Stdlib::Absolutepath]] $storage_root,
   Stdlib::IP::Address $listen_ip,
   Stdlib::Port $listen_port,
 

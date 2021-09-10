@@ -39,6 +39,24 @@ include ::minio
 
 See [REFERENCE.md](REFERENCE.md) for the full reference.
 
+## Configuration
+
+In addition to standard [minio server environment variables][minio-environment-variables],
+there are the following ones:
+
+* `MINIO_OPTS` - used to specify additional command-line arguments for the minio server.
+  Example: `"--quiet --anonymous"` (with quotes)
+
+* `MINIO_DEPLOYMENT_DEFINITION` - used to specify custom deployment definition.
+  Required for erasure coding and distributed mode. Not required if used with
+  a single storage root.
+  Examples:
+
+  * `/var/minio{1...4}` - for erasure coding
+  * `https://server{1...4}/var/minio{1...4} https://server{4...8}/var/minio{1...4}` - for distributed deployments
+  * `/var/minio` - for standalone deployment without erasure coding. Will be the default value
+    if `storage_root` is `/var/minio` or `['/var/minio']`.
+
 ### Class: `minio`
 
 ```puppet
@@ -52,13 +70,15 @@ class { 'minio':
     checksum_type                 => 'sha256',
     configuration_directory       => '/etc/minio',
     installation_directory        => '/opt/minio',
-    storage_root                  => '/var/minio',
+    storage_root                  => '/var/minio', # Could also be an array
     listen_ip                     => '127.0.0.1',
     listen_port                   => 9000,
     configuration                 => {
-        'MINIO_ACCESS_KEY'  => 'admin',
-        'MINIO_SECRET_KEY'  => 'password',
-        'MINIO_REGION_NAME' => 'us-east-1',
+        'MINIO_ACCESS_KEY'            => 'admin',
+        'MINIO_SECRET_KEY'            => 'password',
+        'MINIO_REGION_NAME'           => 'us-east-1',
+        'MINIO_OPTS'                  => '"--quiet --anonymous"',
+        'MINIO_DEPLOYMENT_DEFINITION' => 'https://example{1..4}.com/var/minio{1...4} https://example{5..8}.com/var/minio{1...4}'
     },
     manage_service                => true,
     service_template              => 'minio/systemd.erb',
@@ -103,13 +123,15 @@ class { 'minio::server':
     checksum_type              => 'sha256',
     configuration_directory    => '/etc/minio',
     installation_directory     => '/opt/minio',
-    storage_root               => '/var/minio',
+    storage_root               => '/var/minio', # Could also be an array
     listen_ip                  => '127.0.0.1',
     listen_port                => 9000,
     configuration              => {
-        'MINIO_ACCESS_KEY'  => 'admin',
-        'MINIO_SECRET_KEY'  => 'password',
-        'MINIO_REGION_NAME' => 'us-east-1',
+        'MINIO_ACCESS_KEY'            => 'admin',
+        'MINIO_SECRET_KEY'            => 'password',
+        'MINIO_REGION_NAME'           => 'us-east-1',
+        'MINIO_OPTS'                  => '"--quiet --anonymous"',
+        'MINIO_DEPLOYMENT_DEFINITION' => 'https://example{1..4}.com/var/minio{1...4} https://example{5..8}.com/var/minio{1...4}'
     },
     manage_service             => true,
     service_template           => 'minio/systemd.erb',
@@ -186,6 +208,7 @@ When submitting pull requests, please make sure that module documentation,
 test cases and syntax checks pass.
 
 [minio]: https://minio.io
+[minio-environment-variables]: https://docs.min.io/minio/baremetal/reference/minio-server/minio-server.html#minio-server-environment-variables
 [puppetlabs-stdlib]: https://github.com/puppetlabs/puppetlabs-stdlib
 [puppet-archive]: https://github.com/voxpupuli/puppet-archive
 [puppet-certs]: https://github.com/broadinstitute/puppet-certs
