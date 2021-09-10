@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 1.1.2 (2021-09-10)
+
+**Features**
+
+- Changed `storage_root` to acccept both string and array of strings to support
+  erasure coding
+- Added support for custom deployment definitions with `MINIO_DEPLOYMENT_DEFINITION`
+  to support erasure coding and distributed deployments
+
+## Release 1.1.1 (2021-09-08)
+
+**Features**
+
+- Moved existing profiles to `server` namespace
+- Added support for minio client deployments
+- Added support for client alias management
+- Added support for certificate deployments
+- Added support for custom locations for the configuration file
+- Added support for providing additional options for minio server with `MINIO_OPTS`
+- Updated documentation
+
 ## Release 1.1.0 (2017-11-15)
 
 With this release, ownership of this module is transfered to Kogito UG,
