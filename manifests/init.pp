@@ -16,9 +16,9 @@
 #       listen_ip                     => '127.0.0.1',
 #       listen_port                   => 9000,
 #       configuration                 => {
-#           'MINIO_ACCESS_KEY'  => 'admin',
-#           'MINIO_SECRET_KEY'  => 'password',
-#           'MINIO_REGION_NAME' => 'us-east-1',
+#           'MINIO_ROOT_USER'     => 'admin',
+#           'MINIO_ROOT_PASSWORD' => 'password',
+#           'MINIO_REGION_NAME'   => 'us-east-1',
 #       },
 #       manage_service                => true,
 #       service_template              => 'minio/systemd.erb',
