@@ -74,8 +74,8 @@ class { 'minio':
     listen_ip                     => '127.0.0.1',
     listen_port                   => 9000,
     configuration                 => {
-        'MINIO_ACCESS_KEY'            => 'admin',
-        'MINIO_SECRET_KEY'            => 'password',
+        'MINIO_ROOT_USER'             => 'admin',
+        'MINIO_ROOT_PASSWORD'         => 'password',
         'MINIO_REGION_NAME'           => 'us-east-1',
         'MINIO_OPTS'                  => '"--quiet --anonymous"',
         'MINIO_DEPLOYMENT_DEFINITION' => 'https://example{1..4}.com/var/minio{1...4} https://example{5..8}.com/var/minio{1...4}'
@@ -127,8 +127,8 @@ class { 'minio::server':
     listen_ip                  => '127.0.0.1',
     listen_port                => 9000,
     configuration              => {
-        'MINIO_ACCESS_KEY'            => 'admin',
-        'MINIO_SECRET_KEY'            => 'password',
+        'MINIO_ROOT_USER'             => 'admin',
+        'MINIO_ROOT_PASSWORD'         => 'password',
         'MINIO_REGION_NAME'           => 'us-east-1',
         'MINIO_OPTS'                  => '"--quiet --anonymous"',
         'MINIO_DEPLOYMENT_DEFINITION' => 'https://example{1..4}.com/var/minio{1...4} https://example{5..8}.com/var/minio{1...4}'
