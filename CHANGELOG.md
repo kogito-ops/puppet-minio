@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 1.1.3 (2021-09-14)
+
+**Features**
+
+- Changed to 3.0.0 release of `broadinstitute/certs`
+
+**Documentation**
+
+- Changed deprecated env parameters to recommended ones
+
 ## Release 1.1.2 (2021-09-10)
 
 **Features**
