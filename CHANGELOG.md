@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## Release 1.1.4 (2021-09-23)
+
+**Features**
+
+- Changed module metadata to allow 3.x versions of camptocamp/systemd
+
 ## Release 1.1.3 (2021-09-14)
 
 **Features**
