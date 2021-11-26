@@ -3,6 +3,7 @@
 require 'json'
 require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
+require 'puppet_x/minio/util'
 
 LEGACY_PATH_SUPPORT_MAP ||= {
   '': 'auto',
@@ -12,6 +13,8 @@ LEGACY_PATH_SUPPORT_MAP ||= {
 
 # Implementation for the minio_client_alias type using the Resource API.
 class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi::SimpleProvider
+  include PuppetX::Minio::Util
+
   def get(context)
     context.debug('Returning list of minio client aliases')
     return [] unless PuppetX::Minio::Client.installed?
@@ -79,13 +82,5 @@ class Puppet::Provider::MinioClientAlias::MinioClientAlias < Puppet::ResourceApi
       api_signature: json['api'],
       path_lookup_support: path_lookup_support,
     }
-  end
-
-  def unwrap_maybe_sensitive(param)
-    if param.is_a?(Puppet::Pops::Types::PSensitiveType::Sensitive)
-      return param.unwrap
-    end
-
-    param
   end
 end
