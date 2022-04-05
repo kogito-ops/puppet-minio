@@ -26,12 +26,12 @@ EOS
     },
     access_key: {
       type:      'String',
-      desc:      'The API access key',
+      desc:      'API access key. This can also be used as a username.',
       behaviour: :namevar,
     },
     secret_key: {
       type: 'Variant[Sensitive[String[8, 40]], String[8, 40]]',
-      desc: 'The API access secret',
+      desc: 'API access secret or password.',
     },
   },
 )
