@@ -6,22 +6,25 @@ require 'tempfile'
 require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
 
-DEFAUlT_TARGET_ALIAS ||= 'puppet'.freeze
 DEFAULT_POLICY_VERSION ||= '2012-10-17'.freeze
 
 # Implementation for the minio_policy type using the Resource API.
 class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimpleProvider
+  def initialize
+    @alias = PuppetX::Minio::Client.alias
+  end
+
   def get(context)
     context.debug('Returning list of minio policies')
-    return [] unless PuppetX::Minio::Client.installed?
+    return [] unless PuppetX::Minio::Client.installed? || PuppetX::Minio::Client.alias_set?
 
-    json_policies = PuppetX::Minio::Client.execute("admin policy list #{DEFAUlT_TARGET_ALIAS}")
+    json_policies = PuppetX::Minio::Client.execute("admin policy list #{@alias}")
     return [] if json_policies.empty?
 
     @instances = []
     json_policies.each do |policy|
       # `mcli admin policy info` returns an array
-      json_policy_info = PuppetX::Minio::Client.execute("admin policy info #{DEFAUlT_TARGET_ALIAS} #{policy['policy']}").first
+      json_policy_info = PuppetX::Minio::Client.execute("admin policy info #{@alias} #{policy['policy']}").first
       @instances << to_puppet_policy(json_policy_info)
     end
     @instances
@@ -37,7 +40,7 @@ class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimplePr
       f.write(json_policy)
       f.rewind
 
-      PuppetX::Minio::Client.execute("admin policy add #{DEFAUlT_TARGET_ALIAS} #{name} #{f.path}")
+      PuppetX::Minio::Client.execute("admin policy add #{@alias} #{name} #{f.path}")
     ensure
       f.close
       f.unlink
@@ -55,7 +58,7 @@ class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimplePr
 
   def delete(context, name)
     context.notice("Deleting '#{name}'")
-    PuppetX::Minio::Client.execute("admin policy remove #{DEFAUlT_TARGET_ALIAS} #{name}")
+    PuppetX::Minio::Client.execute("admin policy remove #{@alias} #{name}")
   end
 
   def to_puppet_policy(json)

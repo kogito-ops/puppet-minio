@@ -15,7 +15,7 @@ Puppet::ResourceApi.register_type(
 
 **Autorequires**:
 * `File[/root/.minioclient]`
-* `Minio_client_alias[puppet]`
+* `File[/root/.minio_default_alias]`
 EOS
   features: ['custom_insync'],
   attributes: {

@@ -4,20 +4,22 @@ require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
 require 'puppet_x/minio/util'
 
-DEFAUlT_TARGET_ALIAS ||= 'puppet'.freeze
-
 # Implementation for the minio_user type using the Resource API.
 class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvider
   include PuppetX::Minio::Util
 
+  def initialize
+    @alias = PuppetX::Minio::Client.alias
+  end
+
   def get(context)
     context.debug('Returning list of minio users')
-    return [] unless PuppetX::Minio::Client.installed?
+    return [] unless PuppetX::Minio::Client.installed? || PuppetX::Minio::Client.alias_set?
 
     @instances = []
-    PuppetX::Minio::Client.execute("admin user list #{DEFAUlT_TARGET_ALIAS}").each do |json_user|
+    PuppetX::Minio::Client.execute("admin user list #{@alias}").each do |json_user|
       # `mcli admin user info` returns an array
-      json_user_info = PuppetX::Minio::Client.execute("admin user info #{DEFAUlT_TARGET_ALIAS} #{json_user['accessKey']}").first
+      json_user_info = PuppetX::Minio::Client.execute("admin user info #{@alias} #{json_user['accessKey']}").first
       @instances << to_puppet_user(json_user_info)
     end
     @instances
@@ -27,8 +29,8 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
     context.notice("Creating '#{name}' with #{should.inspect}")
 
     operations = []
-    operations << ["admin user add #{DEFAUlT_TARGET_ALIAS} #{should[:access_key]} #{unwrap_maybe_sensitive(should[:secret_key])}", sensitive: true]
-    operations << ["admin policy set #{DEFAUlT_TARGET_ALIAS} #{should[:policies].join(' ')} user=#{name}"] unless should[:policies].nil?
+    operations << ["admin user add #{@alias} #{should[:access_key]} #{unwrap_maybe_sensitive(should[:secret_key])}", sensitive: true]
+    operations << ["admin policy set #{@alias} #{should[:policies].join(' ')} user=#{name}"] unless should[:policies].nil?
 
     operations.each do |op|
       PuppetX::Minio::Client.execute(*op)
@@ -39,7 +41,7 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
     context.notice("Updating '#{name}' with #{should.inspect}")
 
     operations = []
-    operations << "admin policy set #{DEFAUlT_TARGET_ALIAS} #{should[:policies].join(' ')} user=#{name}" unless should[:policies].nil?
+    operations << "admin policy set #{@alias} #{should[:policies].join(' ')} user=#{name}" unless should[:policies].nil?
 
     operations.each do |op|
       PuppetX::Minio::Client.execute(op)
@@ -48,7 +50,7 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
 
   def delete(context, name)
     context.notice("Deleting '#{name}'")
-    PuppetX::Minio::Client.execute("admin user remove #{DEFAUlT_TARGET_ALIAS} #{name}")
+    PuppetX::Minio::Client.execute("admin user remove #{@alias} #{name}")
   end
 
   def insync?(context, _name, property_name, is_hash, should_hash)
