@@ -30,7 +30,7 @@ EOS
       behaviour: :namevar,
     },
     secret_key: {
-      type: 'Variant[Sensitive[String], String]',
+      type: 'Variant[Sensitive[String[8, 40]], String[8, 40]]',
       desc: 'The API access secret',
     },
   },
