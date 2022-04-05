@@ -33,14 +33,5 @@ EOS
       type: 'Variant[Sensitive[String], String]',
       desc: 'The API access secret',
     },
-    policies: {
-      type:    'Optional[Array[String]]',
-      desc:    'List of MinIO PBAC policies to set for this user.',
-    },
-    member_of: {
-      type:      'Optional[Array[String]]',
-      desc:      'List of groups the user is a member of.',
-      behaviour: :read_only,
-    },
   },
 )

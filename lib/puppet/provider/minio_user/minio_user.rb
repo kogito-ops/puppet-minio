@@ -30,7 +30,7 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
 
     operations = []
     operations << ["admin user add #{@alias} #{should[:access_key]} #{unwrap_maybe_sensitive(should[:secret_key])}", sensitive: true]
-    operations << ["admin policy set #{@alias} #{should[:policies].join(' ')} user=#{name}"] unless should[:policies].nil?
+    operations << ["admin user disable #{@alias} #{should[:access_key]}"] unless should[:enabled]
 
     operations.each do |op|
       PuppetX::Minio::Client.execute(*op)
@@ -41,7 +41,7 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
     context.notice("Updating '#{name}' with #{should.inspect}")
 
     operations = []
-    operations << "admin policy set #{@alias} #{should[:policies].join(' ')} user=#{name}" unless should[:policies].nil?
+    operations << "admin user disable #{@alias} #{name}" unless should[:enabled]
 
     operations.each do |op|
       PuppetX::Minio::Client.execute(op)
@@ -64,13 +64,9 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
   end
 
   def to_puppet_user(json)
-    policies = if json['policyName'].nil? then nil else json['policyName'].split(',') end
-
     {
       ensure: 'present',
       access_key: json['accessKey'],
-      policies: policies,
-      member_of: json['memberOf'] || [],
     }
   end
 end
