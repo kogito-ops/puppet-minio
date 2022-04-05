@@ -18,6 +18,8 @@
 #
 # @param [Hash] aliases
 #   List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
+# @param [String] default_client_alias
+#   The default client alias to use when interacting with MinIO's API. Required.
 # @param [Boolean] purge_unmanaged_aliases
 #   Decides if puppet should purge unmanaged minio client aliases
 #
@@ -26,12 +28,21 @@
 #
 class minio::client::config(
   Hash $aliases                                         = $minio::client::aliases,
+  String $default_client_alias                          = $minio::client::default_client_alias,
   Boolean $purge_unmanaged_aliases                      = $minio::client::purge_unmanaged_aliases,
 ) {
   if ($purge_unmanaged_aliases) {
     resources {'minio_client_alias':
       purge => true,
     }
+  }
+
+  file { '/root/.minio_default_alias':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0640',
+    content => $default_client_alias,
   }
 
   $aliases.each | $alias, $alias_values | {
