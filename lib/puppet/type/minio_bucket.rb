@@ -27,5 +27,16 @@ EOS
       desc:      'The name of the resource you want to manage.',
       behaviour: :namevar,
     },
+    region: {
+      type:      'Optional[String]',
+      desc:      'Region where to create the bucket.',
+      behaviour: :init_only,
+      default:   'us-east-1',
+    },
+    enable_object_lock: {
+      type:   'Optional[Boolean]',
+      desc:   'Enables/Disables S3 object locking.',
+      default: false,
+    }
   },
 )

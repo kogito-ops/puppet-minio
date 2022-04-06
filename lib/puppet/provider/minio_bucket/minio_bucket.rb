@@ -15,18 +15,34 @@ class Puppet::Provider::MinioBucket::MinioBucket < Puppet::ResourceApi::SimplePr
 
     @instances = []
     PuppetX::Minio::Client.execute("ls #{@alias}").each do |json_bucket|
-      @instances << to_puppet_bucket(json_bucket)
+      name = json_bucket['key'].chomp('/')
+      # `mcli stat` returns an array
+      data = PuppetX::Minio::Client.execute("stat #{@alias}/#{name}").first
+
+      @instances << to_puppet_bucket(data)
     end
     @instances
   end
 
   def create(context, name, should)
     context.notice("Creating '#{name}' with #{should.inspect}")
-    PuppetX::Minio::Client.execute("mb #{@alias}/#{name}")
+
+    flags = []
+    flags << "--region=#{should[:region]}" if should[:region]
+    flags << '--with-lock' if should[:enable_object_lock]
+
+    PuppetX::Minio::Client.execute("mb #{flags.join(' ')} #{@alias}/#{name}")
   end
 
   def update(context, name, should)
-    context.warning('`update` method not implemented for `minio_bucket` provider')
+    context.notice("Updating '#{name}' with #{should.inspect}")
+
+    operations = []
+    operations << "retention clear #{@alias}/#{name}" unless should[:enable_object_lock]
+
+    operations.each do |op|
+      PuppetX::Minio::Client.execute(op)
+    end
   end
 
   def delete(context, name)
@@ -35,12 +51,15 @@ class Puppet::Provider::MinioBucket::MinioBucket < Puppet::ResourceApi::SimplePr
   end
 
   def to_puppet_bucket(json)
-    # Delete trailing slashes from bucket name
-    name = json['key'].chomp('/')
+    name = json['url'].delete_prefix("#{@alias}/")
+    region = json['metadata']['location']
+    enable_object_lock = ! json['metadata']['ObjectLock']['enabled'].empty?
 
     {
       ensure: 'present',
       name: name,
+      region: region,
+      enable_object_lock: enable_object_lock,
     }
   end
 end
