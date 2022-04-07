@@ -15,7 +15,7 @@ Puppet::ResourceApi.register_type(
 * `File[/root/.minioclient]`
 * `File[/root/.minio_default_alias]`
 EOS
-  features: [],
+  features: ['custom_insync'],
   attributes: {
     ensure: {
       type:    'Enum[present, absent]',

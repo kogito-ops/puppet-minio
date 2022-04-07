@@ -62,4 +62,14 @@ class Puppet::Provider::MinioBucket::MinioBucket < Puppet::ResourceApi::SimplePr
       enable_object_lock: enable_object_lock,
     }
   end
+
+  def insync?(context, _name, property_name, is_hash, should_hash)
+    context.debug("Checking whether #{property_name} is out of sync")
+    case property_name
+    when :region
+      # It's not possible to move a bucket to a different region
+      # after creation.
+      true
+    end
+  end
 end
