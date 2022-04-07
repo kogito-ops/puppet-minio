@@ -35,7 +35,7 @@ class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimplePr
 
     f = Tempfile.new(["#{name}-policy", '.json'])
     begin
-      json_policy = Hash[:Version => DEFAULT_POLICY_VERSION, :Statement => should[:statement]].to_json
+      json_policy = {:Version => DEFAULT_POLICY_VERSION, :Statement => should[:statement]}.to_json
 
       f.write(json_policy)
       f.rewind
@@ -78,7 +78,7 @@ class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimplePr
   def sanitize_statement(statement)
     statement.transform_keys!(&:capitalize)
 
-    [:Action, :Resource].each do |k|
+    ['Action', 'Resource', :Action, :Resource].each do |k|
       statement[k].sort! unless statement[k].nil?
     end
 
