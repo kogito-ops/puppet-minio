@@ -36,9 +36,7 @@ class Puppet::Provider::MinioGroup::MinioGroup < Puppet::ResourceApi::SimpleProv
 
     operations = []
     operations << "admin group add #{@alias} #{name} #{should[:members].join(' ')}"
-
     operations << "admin group disable #{@alias} #{name}" unless should[:enabled]
-    operations << "admin policy set #{@alias} #{should[:policies].join(',')} group=#{name}" unless should[:policies].nil?
 
     operations.each do |op|
       PuppetX::Minio::Client.execute(op)
@@ -74,7 +72,6 @@ class Puppet::Provider::MinioGroup::MinioGroup < Puppet::ResourceApi::SimpleProv
       ensure: 'present',
       name: json['groupName'],
       members: json['members'] || [],
-      policies: policies,
       enabled:  GROUP_STATUS_MAP[json['groupStatus'].to_sym],
     }
   end

@@ -10,13 +10,11 @@ Puppet::ResourceApi.register_type(
   minio_group { 'admins':
     ensure   => 'present',
     members  => ['userOne', 'userTwo'],
-    policies => ['consoleAdmin'],
   }
 @example
   minio_group { 'my-group':
     ensure   => 'present',
     members  => ['userThree', 'userFour'],
-    policies => ['custom-policy'],
   }
 
 **Autorequires**:
@@ -43,10 +41,6 @@ EOS
       type: 'Optional[Boolean]',
       desc: 'Set to false to disable this group. Defaults to true.',
       default: true,
-    },
-    policies: {
-      type: 'Optional[Array[String]]',
-      desc: 'List of MinIO PBAC policies to set for this group.',
     },
   },
 )
