@@ -6,8 +6,6 @@ require 'tempfile'
 require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
 
-DEFAULT_POLICY_VERSION ||= '2012-10-17'.freeze
-
 # Implementation for the minio_policy type using the Resource API.
 class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimpleProvider
   def initialize
@@ -35,7 +33,7 @@ class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimplePr
 
     f = Tempfile.new(["#{name}-policy", '.json'])
     begin
-      json_policy = {:Version => DEFAULT_POLICY_VERSION, :Statement => should[:statement]}.to_json
+      json_policy = {:Version => should[:version], :Statement => should[:statement]}.to_json
 
       f.write(json_policy)
       f.rewind

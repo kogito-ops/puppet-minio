@@ -40,9 +40,9 @@ EOS
       behaviour: :namevar,
     },
     version: {
-      type:      'String',
-      desc:      'Specifies the language syntax rules that are to be used to process a policy.',
-      behaviour: :read_only,
+      type:    'Optional[String]',
+      desc:    'Specifies the language syntax rules that are to be used to process a policy.',
+      default: '2012-10-17',
     },
     statement: {
       type: 'Array[Hash]',
