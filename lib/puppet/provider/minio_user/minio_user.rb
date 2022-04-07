@@ -4,6 +4,11 @@ require 'puppet/resource_api/simple_provider'
 require 'puppet_x/minio/client'
 require 'puppet_x/minio/util'
 
+STATUS_MAP ||= {
+  'enabled': true,
+  'disabled': false
+}.freeze
+
 # Implementation for the minio_user type using the Resource API.
 class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvider
   include PuppetX::Minio::Util
@@ -67,6 +72,7 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
     {
       ensure: 'present',
       access_key: json['accessKey'],
+      enabled: STATUS_MAP[json['userStatus'].to_sym],
     }
   end
 end

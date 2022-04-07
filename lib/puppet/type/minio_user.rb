@@ -33,5 +33,10 @@ EOS
       type: 'Variant[Sensitive[String[8, 40]], String[8, 40]]',
       desc: 'API access secret or password.',
     },
+    enabled: {
+      type: 'Optional[Boolean]',
+      desc: 'Enables/Disables this user account',
+      default: true,
+    },
   },
 )
