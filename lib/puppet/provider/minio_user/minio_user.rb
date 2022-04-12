@@ -13,18 +13,14 @@ STATUS_MAP ||= {
 class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvider
   include PuppetX::Minio::Util
 
-  def initialize
-    @alias = PuppetX::Minio::Client.alias
-  end
-
   def get(context)
     context.debug('Returning list of minio users')
     return [] unless PuppetX::Minio::Client.installed? || PuppetX::Minio::Client.alias_set?
 
     @instances = []
-    PuppetX::Minio::Client.execute("admin user list #{@alias}").each do |json_user|
+    PuppetX::Minio::Client.execute("admin user list #{PuppetX::Minio::Client.alias}").each do |json_user|
       # `mcli admin user info` returns an array
-      json_user_info = PuppetX::Minio::Client.execute("admin user info #{@alias} #{json_user['accessKey']}").first
+      json_user_info = PuppetX::Minio::Client.execute("admin user info #{PuppetX::Minio::Client.alias} #{json_user['accessKey']}").first
       @instances << to_puppet_user(json_user_info)
     end
     @instances
@@ -34,8 +30,8 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
     context.notice("Creating '#{name}' with #{should.inspect}")
 
     operations = []
-    operations << ["admin user add #{@alias} #{should[:access_key]} #{unwrap_maybe_sensitive(should[:secret_key])}", sensitive: true]
-    operations << ["admin user disable #{@alias} #{should[:access_key]}"] unless should[:enabled]
+    operations << ["admin user add #{PuppetX::Minio::Client.alias} #{should[:access_key]} #{unwrap_maybe_sensitive(should[:secret_key])}", sensitive: true]
+    operations << ["admin user disable #{PuppetX::Minio::Client.alias} #{should[:access_key]}"] unless should[:enabled]
 
     operations.each do |op|
       PuppetX::Minio::Client.execute(*op)
@@ -46,7 +42,7 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
     context.notice("Updating '#{name}' with #{should.inspect}")
 
     operations = []
-    operations << "admin user disable #{@alias} #{name}" unless should[:enabled]
+    operations << "admin user disable #{PuppetX::Minio::Client.alias} #{name}" unless should[:enabled]
 
     operations.each do |op|
       PuppetX::Minio::Client.execute(op)
@@ -55,7 +51,7 @@ class Puppet::Provider::MinioUser::MinioUser < Puppet::ResourceApi::SimpleProvid
 
   def delete(context, name)
     context.notice("Deleting '#{name}'")
-    PuppetX::Minio::Client.execute("admin user remove #{@alias} #{name}")
+    PuppetX::Minio::Client.execute("admin user remove #{PuppetX::Minio::Client.alias} #{name}")
   end
 
   def insync?(context, _name, property_name, is_hash, should_hash)

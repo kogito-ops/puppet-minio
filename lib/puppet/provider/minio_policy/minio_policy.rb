@@ -8,21 +8,17 @@ require 'puppet_x/minio/client'
 
 # Implementation for the minio_policy type using the Resource API.
 class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimpleProvider
-  def initialize
-    @alias = PuppetX::Minio::Client.alias
-  end
-
   def get(context)
     context.debug('Returning list of minio policies')
     return [] unless PuppetX::Minio::Client.installed? || PuppetX::Minio::Client.alias_set?
 
-    json_policies = PuppetX::Minio::Client.execute("admin policy list #{@alias}")
+    json_policies = PuppetX::Minio::Client.execute("admin policy list #{PuppetX::Minio::Client.alias}")
     return [] if json_policies.empty?
 
     @instances = []
     json_policies.each do |policy|
       # `mcli admin policy info` returns an array
-      json_policy_info = PuppetX::Minio::Client.execute("admin policy info #{@alias} #{policy['policy']}").first
+      json_policy_info = PuppetX::Minio::Client.execute("admin policy info #{PuppetX::Minio::Client.alias} #{policy['policy']}").first
       @instances << to_puppet_policy(json_policy_info)
     end
     @instances
@@ -38,7 +34,7 @@ class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimplePr
       f.write(json_policy)
       f.rewind
 
-      PuppetX::Minio::Client.execute("admin policy add #{@alias} #{name} #{f.path}")
+      PuppetX::Minio::Client.execute("admin policy add #{PuppetX::Minio::Client.alias} #{name} #{f.path}")
     ensure
       f.close
       f.unlink
@@ -56,7 +52,7 @@ class Puppet::Provider::MinioPolicy::MinioPolicy < Puppet::ResourceApi::SimplePr
 
   def delete(context, name)
     context.notice("Deleting '#{name}'")
-    PuppetX::Minio::Client.execute("admin policy remove #{@alias} #{name}")
+    PuppetX::Minio::Client.execute("admin policy remove #{PuppetX::Minio::Client.alias} #{name}")
   end
 
   def to_puppet_policy(json)
