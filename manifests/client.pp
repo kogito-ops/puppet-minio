@@ -40,6 +40,8 @@
 #   Target directory to hold the minio client installation. Default: `/opt/minioclient`
 # @param [Hash] aliases
 #   List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
+# @param [String] default_client_alias
+#   The default client alias to use when interacting with MinIO's API. Required.
 # @param [Boolean] purge_unmanaged_aliases
 #   Decides if puppet should purge unmanaged minio client aliases
 #
@@ -56,6 +58,7 @@ class minio::client(
   Stdlib::Absolutepath $installation_directory          = $minio::client_installation_directory,
   String $binary_name                                   = $minio::client_binary_name,
   Hash $aliases                                         = $minio::client_aliases,
+  String $default_client_alias                          = $minio::default_client_alias,
   Boolean $purge_unmanaged_aliases                      = $minio::purge_unmanaged_client_aliases,
 ) {
   if ($manage_client_installation) {

@@ -114,6 +114,8 @@
 #   List of aliases to add to the minio client configuration. For parameter description see `minio_client_alias`.
 # @param [Boolean] purge_unmanaged_client_aliases
 #   Decides if puppet should purge unmanaged minio client aliases
+# @param [String] default_client_alias
+#   The default client alias to use when interacting with MinIO's API. Required.
 # @param [Enum['present', 'absent']] cert_ensure
 #   Decides if minio certificates binary will be installed.
 # @param [Stdlib::Absolutepath] cert_directory
@@ -178,6 +180,7 @@ class minio (
   String $client_binary_name,
   Hash $client_aliases,
   Boolean $purge_unmanaged_client_aliases,
+  String $default_client_alias,
   Enum['present', 'absent'] $cert_ensure,
   Stdlib::Absolutepath $cert_directory,
   Optional[String[1]] $default_cert_name,
